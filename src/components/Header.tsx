@@ -14,6 +14,7 @@ export default function Header() {
 }
 
 const Container = styled.header`
+	background: white;
 	padding: 4px 8px;
   border-bottom: 2px solid red;
   border-image: linear-gradient(to right, var(--primary-light), var(--primary)) 1;

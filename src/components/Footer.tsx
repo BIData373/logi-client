@@ -27,6 +27,7 @@ export default function Footer() {
 }
 
 const Container = styled.footer`
+  background: white;
   border-top: 1px solid #0000001A;
   display: flex;
   justify-content: space-between;
