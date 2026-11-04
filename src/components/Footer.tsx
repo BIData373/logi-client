@@ -38,7 +38,12 @@ const FooterButton = styled.button<{ $active: boolean }>`
 	display: flex;
 	flex-direction: column;
   align-items: center;
-  color: ${(props) => (props.$active ? "var(--primary)" : "#6B7280")}
+  color: ${(props) => (props.$active ? "var(--primary)" : "#6B7280")};
+
+	svg {
+		width: 17px;
+		height: 17px;
+	}
 `
 
 const FooterButtonLabel = styled.p`
