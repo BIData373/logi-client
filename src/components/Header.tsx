@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { useLocation } from "@tanstack/react-router"
 import { PAGES } from "src/consts/pages"
+import DrawerNav from "./Header/DrawerNav"
 
 export default function Header() {
 	const { pathname } = useLocation()
@@ -8,8 +9,9 @@ export default function Header() {
 
 	return (
 		<Container>
-			<PageTitle>{title}</PageTitle>
+			<DrawerNav />
 			<UnitImage src="/test-unit.png" />
+			<PageTitle>{title}</PageTitle>
 		</Container>
 	)
 }
@@ -21,12 +23,16 @@ const Container = styled.header`
   border-image: linear-gradient(to right, var(--primary-light), var(--primary)) 1;
   display: flex;
   justify-content: center;
+  align-items: center;
   position: relative;
+  gap: 5px;
 `
 
 const PageTitle = styled.h1`
-	font-size: 22px;
+	font-size: 20px;
 	width: 100%;
+	vertical-align: middle;
+	font-weight: 600;
 `
 
 const UnitImage = styled.img`
