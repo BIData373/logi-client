@@ -16,7 +16,8 @@
         "aarch64-linux"
       ];
 
-      perSystem = { system, ... }:
+      perSystem =
+        { system, ... }:
         let
           pkgs = import nixpkgs {
             inherit system;
@@ -24,14 +25,15 @@
           };
         in
         {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            nodejs
-            typescript-language-server
-            vscode-langservers-extracted # CSS, Html, JSON language servers
-            claude-code
-          ];
+          devShells.default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              nodejs
+              bun
+              typescript-language-server
+              vscode-langservers-extracted # CSS, Html, JSON language servers
+              claude-code
+            ];
+          };
         };
-      };
     };
 }
