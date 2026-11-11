@@ -31,6 +31,7 @@
               bun
               typescript-language-server
               vscode-langservers-extracted # CSS, Html, JSON language servers
+              tailwindcss-language-server
               claude-code
             ];
           };

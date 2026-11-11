@@ -1,5 +1,7 @@
-
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/rubik";
 
 * {
   box-sizing: border-box;
@@ -15,3 +17,127 @@ body {
   margin: 0;
 }
 
+@theme inline {
+  --font-sans: "Rubik Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-heading: var(--font-sans);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* logi colors for tailwind */
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-strong: var(--primary-strong);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-destructive-strong: var(--destructive-strong);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-notification: var(--notification);
+  --color-overlay: var(--overlay);
+
+  --color-cat-personal: var(--cat-personal);
+  --color-cat-personal-bg: var(--cat-personal-bg);
+  --color-cat-cleaning: var(--cat-cleaning);
+  --color-cat-cleaning-bg: var(--cat-cleaning-bg);
+  --color-cat-disposable: var(--cat-disposable);
+  --color-cat-disposable-bg: var(--cat-disposable-bg);
+  --color-cat-electric: var(--cat-electric);
+  --color-cat-electric-bg: var(--cat-electric-bg);
+
+  --color-status-approver: var(--status-approver);
+  --color-status-approver-bg: var(--status-approver-bg);
+  --color-status-logistics: var(--status-logistics);
+  --color-status-logistics-bg: var(--status-logistics-bg);
+  --color-status-pickup: var(--status-pickup);
+  --color-status-pickup-bg: var(--status-pickup-bg);
+
+  /* logi border radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* logi elevation */
+  --shadow-xs: 0 1px 2px 0 rgba(24, 24, 27, 0.05);
+  --shadow-card: 0 1px 3px 0 rgba(24, 24, 27, 0.06),
+    0 1px 2px -1px rgba(24, 24, 27, 0.04);
+  --shadow-raised: 0 12px 32px -8px rgba(24, 24, 27, 0.16);
+  --shadow-bar: 0 -8px 24px -12px rgba(24, 24, 27, 0.14);
+}
+
+:root {
+  --background: #f6f6f7;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #ffc700; 
+  --primary-foreground: #18181b;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b75;
+  --accent: #fff7d1;
+  --accent-foreground: #18181b;
+  --destructive: #dc2626;
+  --border: #ebebee;
+  --input: #d4d4d8;
+  --ring: #8a6a00;
+  --radius: 0.75rem;
+
+  /* logi colors */
+  --primary-hover: #f2b800;
+  --primary-soft: #fff7d1;
+  --primary-strong: #8a6a00;
+  --success: #15803d;
+  --success-soft: #f0fdf4;
+  --destructive-strong: #b91c1c;
+  --destructive-soft: #fef2f2;
+  --notification: #e11d48;
+  --overlay: rgba(24, 24, 27, 0.4);
+
+  --cat-personal: #047857;
+  --cat-personal-bg: #d1fae5;
+  --cat-cleaning: #0f766e;
+  --cat-cleaning-bg: #ccfbf1;
+  --cat-disposable: #1d4ed8;
+  --cat-disposable-bg: #dbeafe;
+  --cat-electric: #c2410c;
+  --cat-electric-bg: #ffedd5;
+
+  --status-approver: #6d28d9;
+  --status-approver-bg: #ede9fe;
+  --status-logistics: #b45309;
+  --status-logistics-bg: #fef3c7;
+  --status-pickup: #0369a1;
+  --status-pickup-bg: #e0f2fe;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground text-[15px] leading-[22px];
+  }
+}
