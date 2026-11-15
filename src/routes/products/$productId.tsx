@@ -1,14 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { cn } from "cn"
-import { Check, Heart, Share } from "lucide-react"
+import { Heart, Share } from "lucide-react"
 import { useState } from "react"
 import { CheckoutBar } from "#/components/logi/CheckoutBar"
 import { Header, ICON_CLASS } from "#/components/logi/Header"
-import { OrderLineItem } from "#/components/logi/OrderLineItem"
 import { Badge } from "#/components/ui/badge"
 import { Button } from "#/components/ui/button"
 import { Card } from "#/components/ui/card"
-import { Separator } from "#/components/ui/separator"
+import { ToggleGroup, ToggleGroupItem } from "#/components/ui/toggle-group"
 
 export const Route = createFileRoute("/products/$productId")({
 	component: ProductLayout,
@@ -56,17 +54,15 @@ function ProductLayout() {
 						</Badge>
 					</div>
 					<h2 className="font-semibold text-[20px]">דגמים</h2>
-					<div className="rounded-lg border bg-card max-h-60 overflow-scroll">
-						<VariantsCard
-							variants={[44, 45, 46, 47, 48, 49].map((shoeSize) => {
-								return {
-									id: shoeSize.toString(),
-									imageSrc: "/boots.png",
-									label: `שחור ${shoeSize}`,
-								} as Variant
-							})}
-						/>
-					</div>
+					<VariantsCard
+						variants={[44, 45, 46, 47, 48, 49].map((shoeSize) => {
+							return {
+								id: shoeSize.toString(),
+								imageSrc: "/boots.png",
+								label: `שחור / ${shoeSize}`,
+							} as Variant
+						})}
+					/>
 					<Card className="p-3">
 						<h3 className="font-semibold text-[16px]">פרטים על המוצר</h3>
 						<div className="flex text-[14px]">
@@ -92,53 +88,28 @@ function ProductLayout() {
 }
 
 interface VariantsCardProps {
-	selected?: string
 	onSelected?: (selectedId: string) => void
 	variants: Variant[]
 }
 
 interface Variant {
 	id: string
-	imageSrc: string
 	label: string
 }
 
-function VariantsCard({ selected, onSelected, variants }: VariantsCardProps) {
-	const [inner, setInner] = useState<string | null>(null)
-	const selectedVariant = selected ?? inner
-
+function VariantsCard({ onSelected, variants }: VariantsCardProps) {
 	return (
-		<Card flat>
-			{variants.map((variant) => {
-				const on = variant.id === selectedVariant
-
-				return (
-					<>
-						<button
-							key={variant.id}
-							type="button"
-							className={cn(
-								"transition-colors",
-								on && "bg-primary-soft text-primary-strong",
-							)}
-							onClick={() => {
-								setInner(variant.id)
-								onSelected?.(variant.id)
-							}}
-						>
-							<div className="flex items-center">
-								<OrderLineItem
-									className="flex-1"
-									title={variant.label}
-									imageSrc={variant.imageSrc}
-								/>
-								{on && <Check className={"m-4"} />}
-							</div>
-						</button>
-						<Separator />
-					</>
-				)
-			})}
-		</Card>
+		<ToggleGroup>
+			{variants.map((variant) => (
+				<ToggleGroupItem
+					onSelect={() => {
+						onSelected?.(variant.id)
+					}}
+					key={variant.id}
+				>
+					{variant.label}
+				</ToggleGroupItem>
+			))}
+		</ToggleGroup>
 	)
 }
