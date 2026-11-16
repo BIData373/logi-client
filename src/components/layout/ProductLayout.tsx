@@ -38,11 +38,7 @@ export default function ProductLayout() {
 						</Badge>
 					</div>
 					<h2 className="font-semibold text-[20px]">דגמים</h2>
-					<ToggleGroup
-						onValueChange={([value]) => {
-							console.log(value)
-						}}
-					>
+					<ToggleGroup>
 						{[44, 45, 46, 47, 48, 49].map((mockShoeSize) => (
 							<ToggleGroupItem
 								value={mockShoeSize.toString()}
@@ -51,7 +47,7 @@ export default function ProductLayout() {
 						))}{" "}
 					</ToggleGroup>
 
-					<Card className="p-3">
+					<Card className="p-3" flat>
 						<h3 className="font-semibold text-[16px]">פרטים על המוצר</h3>
 						<div className="flex text-[14px]">
 							<div className="min-w-max ml-2 text-muted-foreground">
