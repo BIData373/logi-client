@@ -1,10 +1,7 @@
 import { cn } from "cn"
 import { Bell, ChevronRight, Menu, ShoppingBag } from "lucide-react"
 import type { ReactNode } from "react"
-import { Button } from "#/components/ui/button"
-
-export const ICON_CLASS =
-	"relative rounded-full [&_svg:not([class*='size-'])]:size-5"
+import IconButton from "./IconButton"
 
 interface AppHeaderProps {
 	variant?: "home" | "back"
@@ -36,25 +33,9 @@ export function Header({
 	const start = (
 		<div className="flex min-w-0 items-center gap-1">
 			{isHome ? (
-				<Button
-					variant="ghost"
-					size="icon"
-					aria-label="תפריט"
-					onClick={onMenu}
-					className={ICON_CLASS}
-				>
-					<Menu strokeWidth={1.75} />
-				</Button>
+				<IconButton aria-label="תפריט" onClick={onMenu} icon={Menu} />
 			) : (
-				<Button
-					variant="ghost"
-					size="icon"
-					aria-label="חזרה"
-					onClick={onBack}
-					className={ICON_CLASS}
-				>
-					<ChevronRight strokeWidth={1.75} />
-				</Button>
+				<IconButton icon={ChevronRight} aria-label="חזרה" onClick={onBack} />
 			)}
 			<h1 className="text-nowrap text-xl leading-7 font-semibold">{title}</h1>
 		</div>
@@ -64,24 +45,12 @@ export function Header({
 		actions ??
 		(isHome ? (
 			<>
-				<Button
-					variant="ghost"
-					size="icon"
-					aria-label="סל"
-					onClick={onCartClick}
-					className={ICON_CLASS}
-				>
-					<ShoppingBag strokeWidth={1.75} />
-				</Button>
-				<Button
-					variant="ghost"
-					size="icon"
+				<IconButton aria-label="סל" onClick={onCartClick} icon={ShoppingBag} />
+				<IconButton
 					aria-label="התראות"
 					onClick={onNotificationsClick}
-					className={ICON_CLASS}
-				>
-					<Bell strokeWidth={1.75} />
-				</Button>
+					icon={Bell}
+				/>
 			</>
 		) : null)
 

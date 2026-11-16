@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Heart, Share } from "lucide-react"
-import { useState } from "react"
 import { CheckoutBar } from "#/components/logi/CheckoutBar"
-import { Header, ICON_CLASS } from "#/components/logi/Header"
+import { Header } from "#/components/logi/Header"
 import { Badge } from "#/components/ui/badge"
 import { Button } from "#/components/ui/button"
 import { Card } from "#/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "#/components/ui/toggle-group"
+import IconButton from "#/components/logi/IconButton"
 
 export const Route = createFileRoute("/products/$productId")({
 	component: ProductLayout,
@@ -35,12 +35,8 @@ function ProductLayout() {
 				}
 				actions={
 					<>
-						<Button variant="ghost" size="icon" className={ICON_CLASS}>
-							<Heart />
-						</Button>
-						<Button variant="ghost" size="icon" className={ICON_CLASS}>
-							<Share />
-						</Button>
+						<IconButton icon={Heart} />
+						<IconButton icon={Share} />
 					</>
 				}
 			/>
