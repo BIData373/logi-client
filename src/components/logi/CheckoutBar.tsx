@@ -1,11 +1,10 @@
 import { cn } from "cn"
-import { ShoppingCart } from "lucide-react"
 import { Button } from "#/components/ui/button"
+import AddToCartButton from "./AddToCartButton"
 import { QuantityStepper } from "./QuantityStepper"
 
 interface CheckoutBarProps {
 	onAction?: () => void
-	actionLabel?: string
 	className?: string
 	variant: "add" | "summary"
 	// for "add"
@@ -17,7 +16,7 @@ interface CheckoutBarProps {
 }
 
 export function CheckoutBar(props: CheckoutBarProps) {
-	const { onAction, actionLabel, className } = props
+	const { onAction, className } = props
 
 	return (
 		<div
@@ -28,10 +27,7 @@ export function CheckoutBar(props: CheckoutBarProps) {
 		>
 			{props.variant === "add" ? (
 				<>
-					<Button size="lg" className="flex-1" onClick={onAction}>
-						<ShoppingCart />
-						{actionLabel ?? "הוסף לסל"}
-					</Button>
+					<AddToCartButton />
 					<QuantityStepper
 						max={5}
 						defaultValue={props.quantity}
@@ -49,7 +45,7 @@ export function CheckoutBar(props: CheckoutBarProps) {
 						</strong>
 					</div>
 					<Button size="lg" className="flex-1" onClick={onAction}>
-						{actionLabel ?? "בצע הזמנה"}
+						בצע הזמנה
 					</Button>
 				</>
 			)}
