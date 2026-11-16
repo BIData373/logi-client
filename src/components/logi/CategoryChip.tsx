@@ -33,7 +33,9 @@ export function CategoryChip({
 				className={cn(
 					"flex items-center justify-center rounded-lg border bg-card transition-colors group-focus-visible/chip:ring-2 group-focus-visible/chip:ring-ring group-focus-visible/chip:ring-offset-2 overflow-clip",
 					size === "lg" ? "size-26" : "h-8 w-19 rounded-full",
-					active ? "border-primary bg-primary-soft" : "border-border",
+					active
+						? "border-card-foreground border-2 bg-primary-soft"
+						: "border-border",
 					plus && "bg-primary-soft",
 				)}
 			>
@@ -42,7 +44,12 @@ export function CategoryChip({
 				)}
 				{plus && <Plus className="text-primary-strong" />}
 			</span>
-			<span className="text-xs leading-4 font-medium text-foreground">
+			<span
+				className={cn(
+					"text-xs leading-4 font-medium text-foreground transition-all",
+					active && "font-bold",
+				)}
+			>
 				{label}
 			</span>
 		</button>
