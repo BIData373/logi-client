@@ -3,6 +3,7 @@ import { Thumb } from "./Thumb"
 
 export interface OrderLineItemProps {
 	title: string
+	subtitle?: string
 	imageSrc?: string
 	quantity?: number
 	className?: string
@@ -10,6 +11,7 @@ export interface OrderLineItemProps {
 
 export function OrderLineItem({
 	title,
+	subtitle,
 	imageSrc,
 	quantity,
 	className,
@@ -17,8 +19,9 @@ export function OrderLineItem({
 	return (
 		<div className={cn("flex items-center gap-3", className)}>
 			<Thumb src={imageSrc} />
-			<div className="flex min-w-0 flex-col gap-1">
-				<h3 className="text-base leading-[22px] font-medium">{title}</h3>
+			<div className="flex min-w-0 flex-col">
+				<h3 className="text-base font-medium">{title}</h3>
+				{subtitle && <h4 className="text-sm">{subtitle}</h4>}
 				{quantity && (
 					<span className="text-sm leading-5 text-muted-foreground">
 						כמות: <span className="tabular-nums">{quantity}</span>

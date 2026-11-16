@@ -25,6 +25,7 @@ export default function OrdersLayout() {
 						key={i}
 						item={{
 							title: "כלב חמוד",
+							subtitle: "שחור 44",
 							imageSrc: "/dog.jpg",
 							quantity: 1,
 						}}
