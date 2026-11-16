@@ -1,5 +1,5 @@
 import { cn } from "cn"
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, type LucideIcon } from "lucide-react"
 import { useState } from "react"
 import { Button } from "#/components/ui/button"
 
@@ -37,32 +37,48 @@ export function QuantityStepper({
 				className,
 			)}
 		>
-			<Button
-				variant="ghost"
-				size="icon-sm"
-				aria-label="הוסף"
-				className="rounded-full bg-card shadow-xs hover:bg-card"
-				disabled={current >= max}
+			<QuantityStepperButton
+				icon={Plus}
 				onClick={() => set(current + 1)}
-			>
-				<Plus strokeWidth={2} className="size-4" />
-			</Button>
+				disabled={current >= max}
+			/>
 			<span
 				aria-live="polite"
 				className="min-w-8 text-center font-semibold tabular-nums"
 			>
 				{current}
 			</span>
-			<Button
-				variant="ghost"
-				size="icon-sm"
-				aria-label="הפחת"
-				className={"rounded-full bg-card shadow-xs hover:bg-card"}
-				disabled={current <= min}
+			<QuantityStepperButton
+				icon={Minus}
 				onClick={() => set(current - 1)}
-			>
-				<Minus strokeWidth={2} className="size-4" />
-			</Button>
+				disabled={current <= min}
+			/>
 		</div>
+	)
+}
+
+// stepper button
+interface QuantityStepperButtonProps {
+	icon: LucideIcon
+	onClick: () => void
+	disabled?: boolean
+}
+
+function QuantityStepperButton({
+	disabled,
+	onClick,
+	...props
+}: QuantityStepperButtonProps) {
+	return (
+		<Button
+			variant="ghost"
+			size="icon-sm"
+			aria-label="הפחת"
+			className={"rounded-full bg-card shadow-xs hover:bg-card"}
+			disabled={disabled}
+			onClick={onClick}
+		>
+			<props.icon strokeWidth={2} className="size-4" />
+		</Button>
 	)
 }
