@@ -28,7 +28,7 @@ const MOCK_CATEGORIES: MockCategory[] = [
 	},
 ]
 
-export default function ProductsLayout() {
+export default function AllProductsLayout() {
 	const navigate = useNavigate()
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
