@@ -10,17 +10,17 @@ import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group"
 export default function ProductLayout() {
 	const navigate = useNavigate()
 
+	function handleBack() {
+		navigate({ to: "/" })
+	}
+
 	return (
 		<div className="flex flex-col h-screen" dir="rtl">
 			<Header
 				title=""
 				variant="back"
 				className="border-none bg-transparent fixed"
-				onBack={() =>
-					navigate({
-						to: "/",
-					})
-				}
+				onBack={handleBack}
 				actions={
 					<>
 						<IconButton icon={Heart} />
