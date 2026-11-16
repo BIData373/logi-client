@@ -3,22 +3,18 @@ import { ShoppingCart } from "lucide-react"
 import { Button } from "#/components/ui/button"
 import { QuantityStepper } from "./QuantityStepper"
 
-type CheckoutBarProps = {
+interface CheckoutBarProps {
 	onAction?: () => void
 	actionLabel?: string
 	className?: string
-} & (
-	| {
-			variant?: "summary"
-			count: number
-			countLabel?: string
-	  }
-	| {
-			variant: "add"
-			quantity?: number
-			onQuantityChange?: (quantity: number) => void
-	  }
-)
+	variant: "add" | "summary"
+	// for "add"
+	quantity?: number
+	onQuantityChange?: (quantity: number) => void
+	// for "summary"
+	count?: number
+	countLabel?: string
+}
 
 export function CheckoutBar(props: CheckoutBarProps) {
 	const { onAction, actionLabel, className } = props
