@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+import ProductsLayout from "#/components/layout/ProductsLayout"
 import { pageTitle } from "#/consts/pages"
 
 export const Route = createFileRoute("/_app/_products")({
@@ -7,7 +8,3 @@ export const Route = createFileRoute("/_app/_products")({
 		meta: [{ title: pageTitle("/") }],
 	}),
 })
-
-function ProductsLayout() {
-	return <div></div>
-}
