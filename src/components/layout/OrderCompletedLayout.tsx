@@ -33,7 +33,7 @@ export default function OrderCompletedLayout() {
 				<Card className="w-full">
 					<CardTitle className="px-3 py-1.5">פרטי הזמנה:</CardTitle>
 					<Separator />
-					<div className="p-3">
+					<div className="p-3 flex flex-col gap-1">
 						<InfoRow primary icon={Ticket}>
 							מספר הזמנה: 8827391
 						</InfoRow>
