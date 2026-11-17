@@ -1,9 +1,9 @@
 import { useNavigate } from "@tanstack/react-router"
+import { Search } from "lucide-react"
 import { useState } from "react"
 import { CategoryChip } from "../logi/CategoryChip"
 import { ProductCard } from "../logi/ProductCard"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
-import { Search } from "lucide-react"
 
 interface MockCategory {
 	id: string
@@ -47,7 +47,7 @@ export default function AllProductsLayout() {
 
 	return (
 		<div className="flex flex-col gap-4 p-4">
-			<InputGroup>
+			<InputGroup className="bg-card">
 				<InputGroupInput placeholder="חפש מוצר..." />
 				<InputGroupAddon>
 					<Search />
