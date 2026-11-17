@@ -2,7 +2,8 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { CategoryChip } from "../logi/CategoryChip"
 import { ProductCard } from "../logi/ProductCard"
-import { Input } from "../ui/input"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
+import { Search } from "lucide-react"
 
 interface MockCategory {
 	id: string
@@ -46,7 +47,12 @@ export default function AllProductsLayout() {
 
 	return (
 		<div className="flex flex-col gap-4 p-4">
-			<Input placeholder="חפש מוצר..." />
+			<InputGroup>
+				<InputGroupInput placeholder="חפש מוצר..." />
+				<InputGroupAddon>
+					<Search />
+				</InputGroupAddon>
+			</InputGroup>
 			<div className="flex gap-2">
 				{MOCK_CATEGORIES.map((category) => (
 					<CategoryChip
@@ -73,7 +79,7 @@ export default function AllProductsLayout() {
 					<ProductCard
 						key={i}
 						title="דיסקית אישית"
-						imageSrc="/diskit.jpg"
+						imageSrc="/cat.jpg"
 						category="ציוד לפרט"
 						onClick={() => {
 							handleMoveToProductPage(i.toString())
