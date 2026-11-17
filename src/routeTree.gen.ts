@@ -15,6 +15,7 @@ import { Route as AppCategoriesRouteImport } from './routes/_app/categories'
 import { Route as AppOrdersRouteImport } from './routes/_app/orders'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as CartCartIdRouteImport } from './routes/cart/$cartId'
+import { Route as OrderCompletedOrderIdRouteImport } from './routes/order-completed/$orderId'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 
 const AppRoute = AppRouteImport.update({
@@ -45,6 +46,11 @@ const CartCartIdRoute = CartCartIdRouteImport.update({
   path: '/cart/$cartId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderCompletedOrderIdRoute = OrderCompletedOrderIdRouteImport.update({
+  id: '/order-completed/$orderId',
+  path: '/order-completed/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/orders': typeof AppOrdersRoute
   '/profile': typeof AppProfileRoute
   '/cart/$cartId': typeof CartCartIdRoute
+  '/order-completed/$orderId': typeof OrderCompletedOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRoutesByTo {
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/orders': typeof AppOrdersRoute
   '/profile': typeof AppProfileRoute
   '/cart/$cartId': typeof CartCartIdRoute
+  '/order-completed/$orderId': typeof OrderCompletedOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRoutesById {
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/_app/orders': typeof AppOrdersRoute
   '/_app/profile': typeof AppProfileRoute
   '/cart/$cartId': typeof CartCartIdRoute
+  '/order-completed/$orderId': typeof OrderCompletedOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRouteTypes {
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/profile'
     | '/cart/$cartId'
+    | '/order-completed/$orderId'
     | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/profile'
     | '/cart/$cartId'
+    | '/order-completed/$orderId'
     | '/products/$productId'
   id:
     | '__root__'
@@ -102,12 +113,14 @@ export interface FileRouteTypes {
     | '/_app/orders'
     | '/_app/profile'
     | '/cart/$cartId'
+    | '/order-completed/$orderId'
     | '/products/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   CartCartIdRoute: typeof CartCartIdRoute
+  OrderCompletedOrderIdRoute: typeof OrderCompletedOrderIdRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartCartIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order-completed/$orderId': {
+      id: '/order-completed/$orderId'
+      path: '/order-completed/$orderId'
+      fullPath: '/order-completed/$orderId'
+      preLoaderRoute: typeof OrderCompletedOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/$productId': {
       id: '/products/$productId'
       path: '/products/$productId'
@@ -184,6 +204,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   CartCartIdRoute: CartCartIdRoute,
+  OrderCompletedOrderIdRoute: OrderCompletedOrderIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport

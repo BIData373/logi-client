@@ -19,6 +19,15 @@ export default function CartLayout() {
 		})
 	}
 
+	function handleGoToSummaryPage(orderId: number) {
+		navigate({
+			to: "/order-completed/$orderId",
+			params: {
+				orderId: orderId.toString(),
+			},
+		})
+	}
+
 	return (
 		<div className="flex flex-col h-screen" dir="rtl">
 			<Header variant="back" title="העגלה שלי" />
@@ -47,7 +56,13 @@ export default function CartLayout() {
 					onReplaceVariant={() => handleGoToProduct(1)}
 				/>
 			</div>
-			<CheckoutBar variant="summary" count={10} />
+			<CheckoutBar
+				variant="summary"
+				count={10}
+				onAction={() => {
+					handleGoToSummaryPage(1)
+				}}
+			/>
 		</div>
 	)
 }
