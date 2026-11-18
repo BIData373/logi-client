@@ -15,6 +15,10 @@ export default defineConfig({
 				path: "src/api/model",
 				type: "typescript",
 			},
+			mock: {
+				indexMockFiles: true,
+				generators: [{ type: "msw" }],
+			},
 			client: "react-query",
 			formatter: "biome",
 			clean: true,
