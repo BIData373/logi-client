@@ -8,7 +8,7 @@ const API_URL = process.env.VITE_API_BASE_URL ?? "http://localhost:3000"
 export default defineConfig({
 	logi: {
 		input: {
-			target: `${API_URL}/open-api/json`,
+			target: `${API_URL}/api-json`,
 		},
 		output: {
 			schemas: {
