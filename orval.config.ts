@@ -24,6 +24,7 @@ export default defineConfig({
 			},
 			override: {
 				mock: {
+					baseUrl: API_URL,
 					properties: {
 						"/(^|\\.)id$/": () => faker.number.int({ min: 1, max: 10000 }),
 						"/createdBy$/": () => faker.number.int({ min: 1, max: 10000 }),

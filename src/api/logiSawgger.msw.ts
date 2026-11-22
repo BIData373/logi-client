@@ -116,7 +116,7 @@ export const getAppControllerGetRootMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"*/",
+		"http://localhost:3000/",
 		async (info: Parameters<HttpResponseResolver>[0]) => {
 			if (typeof overrideResponse === "function") {
 				await overrideResponse(info)
@@ -137,7 +137,7 @@ export const getCreateUserMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<PathParams, CreateUserDto>(
-		"*/users",
+		"http://localhost:3000/users",
 		async (
 			info: Parameters<HttpResponseResolver<PathParams, CreateUserDto>>[0],
 		) => {
@@ -165,7 +165,7 @@ export const getCreateProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string }, CreateProductDto>(
-		"*/products/:userId",
+		"http://localhost:3000/products/:userId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ userId: string }, CreateProductDto>
@@ -193,7 +193,7 @@ export const getGetAllProductsMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"*/products",
+		"http://localhost:3000/products",
 		async (info: Parameters<HttpResponseResolver>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -217,7 +217,7 @@ export const getGetProductByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"*/products/:id",
+		"http://localhost:3000/products/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -243,7 +243,7 @@ export const getUpdateProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateProductDto>(
-		"*/products/:id",
+		"http://localhost:3000/products/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateProductDto>
@@ -276,7 +276,7 @@ export const getCreateImageMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ productId: string; createdBy: string }, CreateImageDto>(
-		"*/images/:productId/:createdBy",
+		"http://localhost:3000/images/:productId/:createdBy",
 		async (
 			info: Parameters<
 				HttpResponseResolver<
