@@ -44,7 +44,7 @@ export const getCreateProductResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		name: (() => faker.system.commonFileName("jpg"))(),
-		url: (() => faker.image.url())(),
+		url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	})),
 	...overrideResponse,
 })
@@ -63,7 +63,7 @@ export const getGetAllProductsResponseMock = (): ProductDto[] =>
 			(_, i) => i + 1,
 		).map(() => ({
 			name: (() => faker.system.commonFileName("jpg"))(),
-			url: (() => faker.image.url())(),
+			url: (() => faker.image.url({ width: 100, height: 100 }))(),
 		})),
 	}))
 
@@ -79,7 +79,7 @@ export const getGetProductByIdResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		name: (() => faker.system.commonFileName("jpg"))(),
-		url: (() => faker.image.url())(),
+		url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	})),
 	...overrideResponse,
 })
@@ -96,7 +96,7 @@ export const getUpdateProductResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		name: (() => faker.system.commonFileName("jpg"))(),
-		url: (() => faker.image.url())(),
+		url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	})),
 	...overrideResponse,
 })
@@ -105,7 +105,7 @@ export const getCreateImageResponseMock = (
 	overrideResponse: Partial<Extract<ImageDto, object>> = {},
 ): ImageDto => ({
 	name: (() => faker.system.commonFileName("jpg"))(),
-	url: (() => faker.image.url())(),
+	url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	...overrideResponse,
 })
 

@@ -31,7 +31,7 @@ export default defineConfig({
 						"/username$/": () => faker.internet.username(),
 						"/email$/": () => faker.internet.email(),
 						"/description$/": () => faker.commerce.productDescription(),
-						"/url$/": () => faker.image.url(),
+						"/url$/": () => faker.image.url({ width: 100, height: 100 }),
 					},
 					schemas: {
 						ProductDto: {

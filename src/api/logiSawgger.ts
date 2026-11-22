@@ -32,36 +32,6 @@ import type {
 	UserDto,
 } from "./model"
 
-const getHeaders = (
-	...sources: (RequestInit["headers"] | Record<string, string | undefined>)[]
-) => {
-	const seen = new Set<string>()
-	const layers: [string, string | readonly string[]][][] = []
-	for (const source of sources.reverse()) {
-		if (!source) continue
-		const entries =
-			source instanceof Headers
-				? source.entries()
-				: Symbol.iterator in source
-					? Array.from(
-							source as Iterable<Iterable<string>>,
-							(entry) => Array.from(entry) as [string, string],
-						)
-					: Object.entries<string | readonly string[] | undefined>(source)
-		const layer: [string, string | readonly string[]][] = []
-		for (const [name, value] of entries) {
-			if (value !== undefined && !seen.has(name.toLowerCase()))
-				layer.push([name, value])
-		}
-		for (const [name] of layer) seen.add(name.toLowerCase())
-		layers.push(layer)
-	}
-	return Object.fromEntries(layers.reverse().flat()) as Extract<
-		RequestInit["headers"],
-		Record<string, unknown>
-	>
-}
-
 const withQueryKey = <T extends object, K>(
 	query: T,
 	queryKey: K,
@@ -270,13 +240,34 @@ export const createUser = async (
 	createUserDto: CreateUserDto,
 	options?: RequestInit,
 ): Promise<createUserResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
 	const res = await fetch(getCreateUserUrl(), {
 		...options,
 		method: "POST",
-		headers: getHeaders(
-			{ "Content-Type": "application/json" },
-			options?.headers,
-		),
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
 		body: JSON.stringify(createUserDto),
 	})
 
@@ -377,13 +368,34 @@ export const createProduct = async (
 	createProductDto: CreateProductDto,
 	options?: RequestInit,
 ): Promise<createProductResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
 	const res = await fetch(getCreateProductUrl(userId), {
 		...options,
 		method: "POST",
-		headers: getHeaders(
-			{ "Content-Type": "application/json" },
-			options?.headers,
-		),
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
 		body: JSON.stringify(createProductDto),
 	})
 
@@ -796,13 +808,34 @@ export const updateProduct = async (
 	updateProductDto: UpdateProductDto,
 	options?: RequestInit,
 ): Promise<updateProductResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
 	const res = await fetch(getUpdateProductUrl(id), {
 		...options,
 		method: "PATCH",
-		headers: getHeaders(
-			{ "Content-Type": "application/json" },
-			options?.headers,
-		),
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
 		body: JSON.stringify(updateProductDto),
 	})
 
@@ -907,13 +940,34 @@ export const createImage = async (
 	createImageDto: CreateImageDto,
 	options?: RequestInit,
 ): Promise<createImageResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
 	const res = await fetch(getCreateImageUrl(productId, createdBy), {
 		...options,
 		method: "POST",
-		headers: getHeaders(
-			{ "Content-Type": "application/json" },
-			options?.headers,
-		),
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
 		body: JSON.stringify(createImageDto),
 	})
 
