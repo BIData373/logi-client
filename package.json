@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
-    "@fakerjs/faker": "^3.0.0",
+    "@faker-js/faker": "^10.6.0",
     "@tanstack/devtools-vite": "0.8.6",
     "@tanstack/router-cli": "^1.132.0",
     "@tanstack/router-plugin": "1.169.0",
@@ -53,6 +53,11 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "lightningcss"
+    ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
     ]
   }
 }
