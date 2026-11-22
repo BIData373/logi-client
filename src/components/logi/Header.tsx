@@ -1,10 +1,7 @@
 import { cn } from "cn"
 import { Bell, ChevronRight, Menu, ShoppingBag } from "lucide-react"
 import type { ReactNode } from "react"
-import { Button } from "#/components/ui/button"
-
-export const ICON_CLASS =
-	"relative rounded-full [&_svg:not([class*='size-'])]:size-5"
+import IconButton from "./IconButton"
 
 interface AppHeaderProps {
 	variant?: "home" | "back"
