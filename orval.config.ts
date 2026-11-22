@@ -12,6 +12,7 @@ export default defineConfig({
 		},
 		output: {
 			target: "src/api",
+			baseUrl: API_URL,
 			schemas: {
 				path: "src/api/model",
 				type: "typescript",

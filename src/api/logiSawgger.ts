@@ -93,7 +93,7 @@ export type appControllerGetRootResponseSuccess =
 export type appControllerGetRootResponse = appControllerGetRootResponseSuccess
 
 export const getAppControllerGetRootUrl = () => {
-	return `/`
+	return `http://localhost:3000/`
 }
 
 export const appControllerGetRoot = async (
@@ -117,7 +117,7 @@ export const appControllerGetRoot = async (
 }
 
 export const getAppControllerGetRootQueryKey = () => {
-	return [`/`] as const
+	return [`http://localhost:3000/`] as const
 }
 
 export const getAppControllerGetRootQueryOptions = <
@@ -263,7 +263,7 @@ export type createUserResponseSuccess = createUserResponse200 & {
 export type createUserResponse = createUserResponseSuccess
 
 export const getCreateUserUrl = () => {
-	return `/users`
+	return `http://localhost:3000/users`
 }
 
 export const createUser = async (
@@ -369,7 +369,7 @@ export type createProductResponseSuccess = createProductResponse200 & {
 export type createProductResponse = createProductResponseSuccess
 
 export const getCreateProductUrl = (userId: number) => {
-	return `/products/${userId}`
+	return `http://localhost:3000/products/${userId}`
 }
 
 export const createProduct = async (
@@ -479,7 +479,7 @@ export type getAllProductsResponseSuccess = getAllProductsResponse200 & {
 export type getAllProductsResponse = getAllProductsResponseSuccess
 
 export const getGetAllProductsUrl = () => {
-	return `/products`
+	return `http://localhost:3000/products`
 }
 
 export const getAllProducts = async (
@@ -501,7 +501,7 @@ export const getAllProducts = async (
 }
 
 export const getGetAllProductsQueryKey = () => {
-	return [`/products`] as const
+	return [`http://localhost:3000/products`] as const
 }
 
 export const getGetAllProductsQueryOptions = <
@@ -627,7 +627,7 @@ export type getProductByIdResponseSuccess = getProductByIdResponse200 & {
 export type getProductByIdResponse = getProductByIdResponseSuccess
 
 export const getGetProductByIdUrl = (id: number) => {
-	return `/products/${id}`
+	return `http://localhost:3000/products/${id}`
 }
 
 export const getProductById = async (
@@ -650,7 +650,7 @@ export const getProductById = async (
 }
 
 export const getGetProductByIdQueryKey = (id: number) => {
-	return [`/products/${id}`] as const
+	return [`http://localhost:3000/products/${id}`] as const
 }
 
 export const getGetProductByIdQueryOptions = <
@@ -788,7 +788,7 @@ export type updateProductResponseSuccess = updateProductResponse200 & {
 export type updateProductResponse = updateProductResponseSuccess
 
 export const getUpdateProductUrl = (id: number) => {
-	return `/products/${id}`
+	return `http://localhost:3000/products/${id}`
 }
 
 export const updateProduct = async (
@@ -898,7 +898,7 @@ export type createImageResponseSuccess = createImageResponse200 & {
 export type createImageResponse = createImageResponseSuccess
 
 export const getCreateImageUrl = (productId: number, createdBy: number) => {
-	return `/images/${productId}/${createdBy}`
+	return `http://localhost:3000/images/${productId}/${createdBy}`
 }
 
 export const createImage = async (
