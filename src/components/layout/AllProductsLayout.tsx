@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { useState } from "react"
 import { useGetAllProducts } from "#/api/logiSawgger"
+import { useFuse } from "#/hooks/useFuse"
 import { CategoryChip } from "../logi/CategoryChip"
 import { ProductCard } from "../logi/ProductCard"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
@@ -33,8 +34,14 @@ const MOCK_CATEGORIES: MockCategory[] = [
 export default function AllProductsLayout() {
 	const navigate = useNavigate()
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
+	const [query, setQuery] = useState("")
 
 	const { data } = useGetAllProducts()
+	const products = data?.data ?? []
+	const filteredProducts = useFuse(products, query, {
+		keys: ["name"],
+		threshold: 0.3,
+	})
 
 	function handleMoveToProductPage(productId: number) {
 		navigate({
@@ -54,7 +61,11 @@ export default function AllProductsLayout() {
 	return (
 		<div className="flex flex-col gap-4 p-4">
 			<InputGroup className="bg-card">
-				<InputGroupInput placeholder="חפש מוצר..." />
+				<InputGroupInput
+					placeholder="חפש מוצר..."
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+				/>
 				<InputGroupAddon>
 					<Search />
 				</InputGroupAddon>
@@ -81,7 +92,7 @@ export default function AllProductsLayout() {
 			</div>
 			<h2 className="font-semibold text-[24px]">קטלוג המוצרים</h2>
 			<div className="grid grid-cols-2 gap-4">
-				{data?.data.map((product) => (
+				{filteredProducts.map((product) => (
 					<ProductCard
 						key={product.id}
 						title={product.name}
