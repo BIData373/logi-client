@@ -26,25 +26,25 @@ import type {
 export const getCreateUserResponseMock = (
 	overrideResponse: Partial<Extract<UserDto, object>> = {},
 ): UserDto => ({
-	username: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	email: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	username: (() => faker.internet.username())(),
+	name: (() => faker.person.fullName())(),
+	email: (() => faker.internet.email())(),
 	...overrideResponse,
 })
 
 export const getCreateProductResponseMock = (
 	overrideResponse: Partial<Extract<ProductDto, object>> = {},
 ): ProductDto => ({
-	id: faker.number.float({ fractionDigits: 2 }),
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	createdBy: faker.number.float({ fractionDigits: 2 }),
-	description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() => faker.commerce.productName())(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
 	images: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		name: (() => faker.system.commonFileName("jpg"))(),
+		url: (() => faker.image.url())(),
 	})),
 	...overrideResponse,
 })
@@ -54,32 +54,32 @@ export const getGetAllProductsResponseMock = (): ProductDto[] =>
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		id: faker.number.float({ fractionDigits: 2 }),
-		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		createdBy: faker.number.float({ fractionDigits: 2 }),
-		description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() => faker.commerce.productName())(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
 		images: Array.from(
 			{ length: faker.number.int({ min: 1, max: 10 }) },
 			(_, i) => i + 1,
 		).map(() => ({
-			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-			url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			name: (() => faker.system.commonFileName("jpg"))(),
+			url: (() => faker.image.url())(),
 		})),
 	}))
 
 export const getGetProductByIdResponseMock = (
 	overrideResponse: Partial<Extract<ProductDto, object>> = {},
 ): ProductDto => ({
-	id: faker.number.float({ fractionDigits: 2 }),
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	createdBy: faker.number.float({ fractionDigits: 2 }),
-	description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() => faker.commerce.productName())(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
 	images: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		name: (() => faker.system.commonFileName("jpg"))(),
+		url: (() => faker.image.url())(),
 	})),
 	...overrideResponse,
 })
@@ -87,16 +87,16 @@ export const getGetProductByIdResponseMock = (
 export const getUpdateProductResponseMock = (
 	overrideResponse: Partial<Extract<ProductDto, object>> = {},
 ): ProductDto => ({
-	id: faker.number.float({ fractionDigits: 2 }),
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	createdBy: faker.number.float({ fractionDigits: 2 }),
-	description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() => faker.commerce.productName())(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
 	images: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
 		(_, i) => i + 1,
 	).map(() => ({
-		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		name: (() => faker.system.commonFileName("jpg"))(),
+		url: (() => faker.image.url())(),
 	})),
 	...overrideResponse,
 })
@@ -104,8 +104,8 @@ export const getUpdateProductResponseMock = (
 export const getCreateImageResponseMock = (
 	overrideResponse: Partial<Extract<ImageDto, object>> = {},
 ): ImageDto => ({
-	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
-	url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	name: (() => faker.system.commonFileName("jpg"))(),
+	url: (() => faker.image.url())(),
 	...overrideResponse,
 })
 
