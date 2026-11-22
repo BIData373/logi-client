@@ -1,6 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { useState } from "react"
+import { useGetAllProducts } from "#/api/logiSawgger"
 import { CategoryChip } from "../logi/CategoryChip"
 import { ProductCard } from "../logi/ProductCard"
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
@@ -33,9 +34,14 @@ export default function AllProductsLayout() {
 	const navigate = useNavigate()
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
-	function handleMoveToProductPage(productId: string) {
+	const { data } = useGetAllProducts()
+
+	function handleMoveToProductPage(productId: number) {
 		navigate({
-			to: `/products/${productId}`,
+			to: `/products/$productId`,
+			params: {
+				productId: productId.toString(),
+			},
 		})
 	}
 
@@ -75,15 +81,12 @@ export default function AllProductsLayout() {
 			</div>
 			<h2 className="font-semibold text-[24px]">קטלוג המוצרים</h2>
 			<div className="grid grid-cols-2 gap-4">
-				{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+				{data?.data.map((product) => (
 					<ProductCard
-						key={i}
-						title="דיסקית אישית"
-						imageSrc="/cat.jpg"
-						category="ציוד לפרט"
-						onClick={() => {
-							handleMoveToProductPage(i.toString())
-						}}
+						key={product.id}
+						title={product.name}
+						imageSrc={product.images[0].url}
+						onClick={() => handleMoveToProductPage(product.id)}
 					/>
 				))}
 			</div>
