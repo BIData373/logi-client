@@ -356,6 +356,167 @@ export const useCreateUser = <TError = unknown, TContext = unknown>(
 	return useMutation(getCreateUserMutationOptions(options), queryClient)
 }
 
+export type getUserOrdersResponse200 = {
+	data: OrderDto[]
+	status: 200
+}
+
+export type getUserOrdersResponseSuccess = getUserOrdersResponse200 & {
+	headers: Headers
+}
+
+export type getUserOrdersResponse = getUserOrdersResponseSuccess
+
+export const getGetUserOrdersUrl = (id: number) => {
+	return `http://localhost:3000/users/${id}/orders`
+}
+
+export const getUserOrders = async (
+	id: number,
+	options?: RequestInit,
+): Promise<getUserOrdersResponse> => {
+	const res = await fetch(getGetUserOrdersUrl(id), {
+		...options,
+		method: "GET",
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: getUserOrdersResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as getUserOrdersResponse
+}
+
+export const getGetUserOrdersQueryKey = (id: number) => {
+	return [`http://localhost:3000/users/${id}/orders`] as const
+}
+
+export const getGetUserOrdersQueryOptions = <
+	TData = Awaited<ReturnType<typeof getUserOrders>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
+		>
+		fetch?: RequestInit
+	},
+) => {
+	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+
+	const queryKey = queryOptions?.queryKey ?? getGetUserOrdersQueryKey(id)
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserOrders>>> = ({
+		signal,
+	}) => getUserOrders(id, { signal, ...fetchOptions })
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: id !== null && id !== undefined,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof getUserOrders>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUserOrdersQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getUserOrders>>
+>
+export type GetUserOrdersQueryError = unknown
+
+export function useGetUserOrders<
+	TData = Awaited<ReturnType<typeof getUserOrders>>,
+	TError = unknown,
+>(
+	id: number,
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getUserOrders>>,
+					TError,
+					Awaited<ReturnType<typeof getUserOrders>>
+				>,
+				"initialData"
+			>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserOrders<
+	TData = Awaited<ReturnType<typeof getUserOrders>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getUserOrders>>,
+					TError,
+					Awaited<ReturnType<typeof getUserOrders>>
+				>,
+				"initialData"
+			>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserOrders<
+	TData = Awaited<ReturnType<typeof getUserOrders>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserOrders<
+	TData = Awaited<ReturnType<typeof getUserOrders>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+} {
+	const queryOptions = getGetUserOrdersQueryOptions(id, options)
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+	return withQueryKey(query, queryOptions.queryKey)
+}
+
 export type createProductResponse200 = {
 	data: ProductDto
 	status: 200
