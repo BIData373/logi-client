@@ -15,11 +15,16 @@ import { HttpResponse, http } from "msw"
 
 import type {
 	CreateImageDto,
+	CreateOrderItemDto,
 	CreateProductDto,
 	CreateUserDto,
 	CreateVariantDto,
 	ImageDto,
+	OrderDto,
+	OrderItemDto,
 	ProductDto,
+	UpdateOrderDto,
+	UpdateOrderItemDto,
 	UpdateProductDto,
 	UpdateVariantDto,
 	UserDto,
@@ -238,6 +243,250 @@ export const getDeleteVariantResponseMock = (
 	description: (() => faker.commerce.productDescription())(),
 	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 	isPrivate: faker.datatype.boolean(),
+	...overrideResponse,
+})
+
+export const getCreateOrderResponseMock = (
+	overrideResponse: Partial<Extract<OrderDto, object>> = {},
+): OrderDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	orderItems: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		variants: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() =>
+				`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+			isPrivate: faker.datatype.boolean(),
+		})),
+	})),
+	...overrideResponse,
+})
+
+export const getGetOrderByIdResponseMock = (
+	overrideResponse: Partial<Extract<OrderDto, object>> = {},
+): OrderDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	orderItems: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		variants: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() =>
+				`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+			isPrivate: faker.datatype.boolean(),
+		})),
+	})),
+	...overrideResponse,
+})
+
+export const getUpdateOrderResponseMock = (
+	overrideResponse: Partial<Extract<OrderDto, object>> = {},
+): OrderDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	orderItems: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		variants: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() =>
+				`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+			isPrivate: faker.datatype.boolean(),
+		})),
+	})),
+	...overrideResponse,
+})
+
+export const getDeleteOrderResponseMock = (
+	overrideResponse: Partial<Extract<OrderDto, object>> = {},
+): OrderDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	orderItems: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		variants: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() =>
+				`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+			isPrivate: faker.datatype.boolean(),
+		})),
+	})),
+	...overrideResponse,
+})
+
+export const getCreateOrderItemResponseMock = (
+	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
+): OrderItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
+	...overrideResponse,
+})
+
+export const getGetOrderItemByIdResponseMock = (
+	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
+): OrderItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
+	...overrideResponse,
+})
+
+export const getUpdateOrderItemResponseMock = (
+	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
+): OrderItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
+	...overrideResponse,
+})
+
+export const getDeleteOrderItemResponseMock = (
+	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
+): OrderItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	estimatedDate: faker.date.past().toISOString().slice(0, 19) + "Z",
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
 	...overrideResponse,
 })
 
@@ -561,6 +810,223 @@ export const getDeleteVariantMockHandler = (
 		options,
 	)
 }
+
+export const getCreateOrderMockHandler = (
+	overrideResponse?:
+		| OrderDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ userId: string }>>[0],
+		  ) => Promise<OrderDto> | OrderDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post<{ userId: string }>(
+		"http://localhost:3000/orders/:userId",
+		async (info: Parameters<HttpResponseResolver<{ userId: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getCreateOrderResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getGetOrderByIdMockHandler = (
+	overrideResponse?:
+		| OrderDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<OrderDto> | OrderDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get<{ id: string }>(
+		"http://localhost:3000/orders/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetOrderByIdResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getUpdateOrderMockHandler = (
+	overrideResponse?:
+		| OrderDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<{ id: string }, UpdateOrderDto>
+				>[0],
+		  ) => Promise<OrderDto> | OrderDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.patch<{ id: string }, UpdateOrderDto>(
+		"http://localhost:3000/orders/:id",
+		async (
+			info: Parameters<HttpResponseResolver<{ id: string }, UpdateOrderDto>>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUpdateOrderResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getDeleteOrderMockHandler = (
+	overrideResponse?:
+		| OrderDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<OrderDto> | OrderDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete<{ id: string }>(
+		"http://localhost:3000/orders/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getDeleteOrderResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getCreateOrderItemMockHandler = (
+	overrideResponse?:
+		| OrderItemDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<
+						{ userId: string; orderId: string; variantId: string },
+						CreateOrderItemDto
+					>
+				>[0],
+		  ) => Promise<OrderItemDto> | OrderItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post<
+		{ userId: string; orderId: string; variantId: string },
+		CreateOrderItemDto
+	>(
+		"http://localhost:3000/order-items/:userId/:orderId/:variantId",
+		async (
+			info: Parameters<
+				HttpResponseResolver<
+					{ userId: string; orderId: string; variantId: string },
+					CreateOrderItemDto
+				>
+			>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getCreateOrderItemResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getGetOrderItemByIdMockHandler = (
+	overrideResponse?:
+		| OrderItemDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<OrderItemDto> | OrderItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get<{ id: string }>(
+		"http://localhost:3000/order-items/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetOrderItemByIdResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getUpdateOrderItemMockHandler = (
+	overrideResponse?:
+		| OrderItemDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<{ id: string }, UpdateOrderItemDto>
+				>[0],
+		  ) => Promise<OrderItemDto> | OrderItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.patch<{ id: string }, UpdateOrderItemDto>(
+		"http://localhost:3000/order-items/:id",
+		async (
+			info: Parameters<
+				HttpResponseResolver<{ id: string }, UpdateOrderItemDto>
+			>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUpdateOrderItemResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getDeleteOrderItemMockHandler = (
+	overrideResponse?:
+		| OrderItemDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<OrderItemDto> | OrderItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete<{ id: string }>(
+		"http://localhost:3000/order-items/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getDeleteOrderItemResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
 export const getLogiSawggerMock = () => [
 	getAppControllerGetRootMockHandler(),
 	getCreateUserMockHandler(),
@@ -574,4 +1040,12 @@ export const getLogiSawggerMock = () => [
 	getGetVariantByIdMockHandler(),
 	getUpdateVariantMockHandler(),
 	getDeleteVariantMockHandler(),
+	getCreateOrderMockHandler(),
+	getGetOrderByIdMockHandler(),
+	getUpdateOrderMockHandler(),
+	getDeleteOrderMockHandler(),
+	getCreateOrderItemMockHandler(),
+	getGetOrderItemByIdMockHandler(),
+	getUpdateOrderItemMockHandler(),
+	getDeleteOrderItemMockHandler(),
 ]
