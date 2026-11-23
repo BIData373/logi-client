@@ -7,12 +7,14 @@ import IconButton from "../logi/IconButton"
 import { Badge } from "../ui/badge"
 import { Card } from "../ui/card"
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group"
+import ProductImagesCarousel from "../logi/ProductImagesCarousel"
 
 export default function ProductLayout() {
 	const navigate = useNavigate()
 
 	const { productId } = useParams({ from: "/products/$productId" })
 	const { data } = useGetProductById(Number(productId))
+	const product = data?.data
 
 	function handleBack() {
 		navigate({ to: "/" })
@@ -23,7 +25,7 @@ export default function ProductLayout() {
 			<Header
 				title=""
 				variant="back"
-				className="fixed shadow-lg backdrop-blur-lg bg-background/30 border-none"
+				className="fixed shadow-lg backdrop-blur-lg bg-background/30 border-none z-99"
 				onBack={handleBack}
 				actions={
 					<>
@@ -32,15 +34,11 @@ export default function ProductLayout() {
 					</>
 				}
 			/>
+			<ProductImagesCarousel images={product?.images ?? []} />
 			<main className="flex flex-col flex-1 overflow-scroll">
-				<img
-					alt="Product"
-					className="w-full rounded-b-lg max-h-100 object-cover"
-					src={data?.data.images[0].url}
-				/>
 				<div className="p-3 flex flex-col gap-2">
 					<div className="flex justify-between">
-						<h1 className="text-[28px] font-bold">{data?.data.name}</h1>
+						<h1 className="text-[28px] font-bold">{product?.name}</h1>
 						<Badge className="bg-green-100 text-green-800 text-[13px]">
 							ציוד לפרט
 						</Badge>
@@ -58,7 +56,7 @@ export default function ProductLayout() {
 					<Card className="p-3" flat>
 						<h3 className="font-semibold text-[16px]">פרטים על המוצר</h3>
 						<div className="flex text-[14px]">
-							<p>{data?.data.description}</p>
+							<p>{product?.description}</p>
 						</div>
 					</Card>
 				</div>
