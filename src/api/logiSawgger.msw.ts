@@ -17,10 +17,13 @@ import type {
 	CreateImageDto,
 	CreateProductDto,
 	CreateUserDto,
+	CreateVariantDto,
 	ImageDto,
 	ProductDto,
 	UpdateProductDto,
+	UpdateVariantDto,
 	UserDto,
+	VariantDto,
 } from "./model"
 
 export const getCreateUserResponseMock = (
@@ -46,6 +49,18 @@ export const getCreateProductResponseMock = (
 		name: (() => faker.system.commonFileName("jpg"))(),
 		url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	})),
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
 	...overrideResponse,
 })
 
@@ -65,6 +80,18 @@ export const getGetAllProductsResponseMock = (): ProductDto[] =>
 			name: (() => faker.system.commonFileName("jpg"))(),
 			url: (() => faker.image.url({ width: 100, height: 100 }))(),
 		})),
+		variants: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() =>
+				`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+			isPrivate: faker.datatype.boolean(),
+		})),
 	}))
 
 export const getGetProductByIdResponseMock = (
@@ -80,6 +107,18 @@ export const getGetProductByIdResponseMock = (
 	).map(() => ({
 		name: (() => faker.system.commonFileName("jpg"))(),
 		url: (() => faker.image.url({ width: 100, height: 100 }))(),
+	})),
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
 	})),
 	...overrideResponse,
 })
@@ -98,6 +137,47 @@ export const getUpdateProductResponseMock = (
 		name: (() => faker.system.commonFileName("jpg"))(),
 		url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	})),
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
+	...overrideResponse,
+})
+
+export const getDeleteProductResponseMock = (
+	overrideResponse: Partial<Extract<ProductDto, object>> = {},
+): ProductDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() => faker.commerce.productName())(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
+	images: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		name: (() => faker.system.commonFileName("jpg"))(),
+		url: (() => faker.image.url({ width: 100, height: 100 }))(),
+	})),
+	variants: Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+	})),
 	...overrideResponse,
 })
 
@@ -106,6 +186,58 @@ export const getCreateImageResponseMock = (
 ): ImageDto => ({
 	name: (() => faker.system.commonFileName("jpg"))(),
 	url: (() => faker.image.url({ width: 100, height: 100 }))(),
+	...overrideResponse,
+})
+
+export const getCreateVariantResponseMock = (
+	overrideResponse: Partial<Extract<VariantDto, object>> = {},
+): VariantDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() =>
+		`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
+	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+	isPrivate: faker.datatype.boolean(),
+	...overrideResponse,
+})
+
+export const getGetVariantByIdResponseMock = (
+	overrideResponse: Partial<Extract<VariantDto, object>> = {},
+): VariantDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() =>
+		`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
+	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+	isPrivate: faker.datatype.boolean(),
+	...overrideResponse,
+})
+
+export const getUpdateVariantResponseMock = (
+	overrideResponse: Partial<Extract<VariantDto, object>> = {},
+): VariantDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() =>
+		`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
+	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+	isPrivate: faker.datatype.boolean(),
+	...overrideResponse,
+})
+
+export const getDeleteVariantResponseMock = (
+	overrideResponse: Partial<Extract<VariantDto, object>> = {},
+): VariantDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	name: (() =>
+		`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	description: (() => faker.commerce.productDescription())(),
+	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+	isPrivate: faker.datatype.boolean(),
 	...overrideResponse,
 })
 
@@ -262,27 +394,45 @@ export const getUpdateProductMockHandler = (
 	)
 }
 
+export const getDeleteProductMockHandler = (
+	overrideResponse?:
+		| ProductDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<ProductDto> | ProductDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete<{ id: string }>(
+		"http://localhost:3000/products/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getDeleteProductResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
 export const getCreateImageMockHandler = (
 	overrideResponse?:
 		| ImageDto
 		| ((
 				info: Parameters<
-					HttpResponseResolver<
-						{ productId: string; createdBy: string },
-						CreateImageDto
-					>
+					HttpResponseResolver<{ createdBy: string }, CreateImageDto>
 				>[0],
 		  ) => Promise<ImageDto> | ImageDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ productId: string; createdBy: string }, CreateImageDto>(
-		"http://localhost:3000/images/:productId/:createdBy",
+	return http.post<{ createdBy: string }, CreateImageDto>(
+		"http://localhost:3000/images/:createdBy",
 		async (
 			info: Parameters<
-				HttpResponseResolver<
-					{ productId: string; createdBy: string },
-					CreateImageDto
-				>
+				HttpResponseResolver<{ createdBy: string }, CreateImageDto>
 			>[0],
 		) => {
 			return HttpResponse.json(
@@ -297,6 +447,120 @@ export const getCreateImageMockHandler = (
 		options,
 	)
 }
+
+export const getCreateVariantMockHandler = (
+	overrideResponse?:
+		| VariantDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<
+						{ userId: string; productId: string },
+						CreateVariantDto
+					>
+				>[0],
+		  ) => Promise<VariantDto> | VariantDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post<{ userId: string; productId: string }, CreateVariantDto>(
+		"http://localhost:3000/variants/:userId/:productId",
+		async (
+			info: Parameters<
+				HttpResponseResolver<
+					{ userId: string; productId: string },
+					CreateVariantDto
+				>
+			>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getCreateVariantResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getGetVariantByIdMockHandler = (
+	overrideResponse?:
+		| VariantDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<VariantDto> | VariantDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get<{ id: string }>(
+		"http://localhost:3000/variants/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetVariantByIdResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getUpdateVariantMockHandler = (
+	overrideResponse?:
+		| VariantDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<{ id: string }, UpdateVariantDto>
+				>[0],
+		  ) => Promise<VariantDto> | VariantDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.patch<{ id: string }, UpdateVariantDto>(
+		"http://localhost:3000/variants/:id",
+		async (
+			info: Parameters<
+				HttpResponseResolver<{ id: string }, UpdateVariantDto>
+			>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUpdateVariantResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getDeleteVariantMockHandler = (
+	overrideResponse?:
+		| VariantDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<VariantDto> | VariantDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete<{ id: string }>(
+		"http://localhost:3000/variants/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getDeleteVariantResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
 export const getLogiSawggerMock = () => [
 	getAppControllerGetRootMockHandler(),
 	getCreateUserMockHandler(),
@@ -304,5 +568,10 @@ export const getLogiSawggerMock = () => [
 	getGetAllProductsMockHandler(),
 	getGetProductByIdMockHandler(),
 	getUpdateProductMockHandler(),
+	getDeleteProductMockHandler(),
 	getCreateImageMockHandler(),
+	getCreateVariantMockHandler(),
+	getGetVariantByIdMockHandler(),
+	getUpdateVariantMockHandler(),
+	getDeleteVariantMockHandler(),
 ]

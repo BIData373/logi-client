@@ -26,10 +26,13 @@ import type {
 	CreateImageDto,
 	CreateProductDto,
 	CreateUserDto,
+	CreateVariantDto,
 	ImageDto,
 	ProductDto,
 	UpdateProductDto,
+	UpdateVariantDto,
 	UserDto,
+	VariantDto,
 } from "./model"
 
 const withQueryKey = <T extends object, K>(
@@ -919,6 +922,107 @@ export const useUpdateProduct = <TError = unknown, TContext = unknown>(
 	return useMutation(getUpdateProductMutationOptions(options), queryClient)
 }
 
+export type deleteProductResponse200 = {
+	data: ProductDto
+	status: 200
+}
+
+export type deleteProductResponseSuccess = deleteProductResponse200 & {
+	headers: Headers
+}
+
+export type deleteProductResponse = deleteProductResponseSuccess
+
+export const getDeleteProductUrl = (id: number) => {
+	return `http://localhost:3000/products/${id}`
+}
+
+export const deleteProduct = async (
+	id: number,
+	options?: RequestInit,
+): Promise<deleteProductResponse> => {
+	const res = await fetch(getDeleteProductUrl(id), {
+		...options,
+		method: "DELETE",
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: deleteProductResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as deleteProductResponse
+}
+
+export const getDeleteProductMutationKey = () => ["deleteProduct"] as const
+
+export const getDeleteProductMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof deleteProduct>>,
+		TError,
+		DeleteProductMutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof deleteProduct>>,
+	TError,
+	DeleteProductMutationVariables,
+	TContext
+> => {
+	const mutationKey = getDeleteProductMutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof deleteProduct>>,
+		DeleteProductMutationVariables
+	> = (props) => {
+		const { id } = props ?? {}
+
+		return deleteProduct(id, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteProductMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteProduct>>
+>
+
+export type DeleteProductMutationError = unknown
+export type DeleteProductMutationVariables = { id: number }
+
+export const useDeleteProduct = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof deleteProduct>>,
+			TError,
+			DeleteProductMutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof deleteProduct>>,
+	TError,
+	DeleteProductMutationVariables,
+	TContext
+> => {
+	return useMutation(getDeleteProductMutationOptions(options), queryClient)
+}
+
 export type createImageResponse200 = {
 	data: ImageDto
 	status: 200
@@ -930,12 +1034,11 @@ export type createImageResponseSuccess = createImageResponse200 & {
 
 export type createImageResponse = createImageResponseSuccess
 
-export const getCreateImageUrl = (productId: number, createdBy: number) => {
-	return `http://localhost:3000/images/${productId}/${createdBy}`
+export const getCreateImageUrl = (createdBy: number) => {
+	return `http://localhost:3000/images/${createdBy}`
 }
 
 export const createImage = async (
-	productId: number,
 	createdBy: number,
 	createImageDto: CreateImageDto,
 	options?: RequestInit,
@@ -961,7 +1064,7 @@ export const createImage = async (
 		}
 		return headers
 	}
-	const res = await fetch(getCreateImageUrl(productId, createdBy), {
+	const res = await fetch(getCreateImageUrl(createdBy), {
 		...options,
 		method: "POST",
 		headers: {
@@ -1013,9 +1116,9 @@ export const getCreateImageMutationOptions = <
 		Awaited<ReturnType<typeof createImage>>,
 		CreateImageMutationVariables
 	> = (props) => {
-		const { productId, createdBy, data } = props ?? {}
+		const { createdBy, data } = props ?? {}
 
-		return createImage(productId, createdBy, data, fetchOptions)
+		return createImage(createdBy, data, fetchOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -1027,7 +1130,6 @@ export type CreateImageMutationResult = NonNullable<
 export type CreateImageMutationBody = CreateImageDto
 export type CreateImageMutationError = unknown
 export type CreateImageMutationVariables = {
-	productId: number
 	createdBy: number
 	data: CreateImageDto
 }
@@ -1050,4 +1152,530 @@ export const useCreateImage = <TError = unknown, TContext = unknown>(
 	TContext
 > => {
 	return useMutation(getCreateImageMutationOptions(options), queryClient)
+}
+
+export type createVariantResponse200 = {
+	data: VariantDto
+	status: 200
+}
+
+export type createVariantResponseSuccess = createVariantResponse200 & {
+	headers: Headers
+}
+
+export type createVariantResponse = createVariantResponseSuccess
+
+export const getCreateVariantUrl = (userId: number, productId: number) => {
+	return `http://localhost:3000/variants/${userId}/${productId}`
+}
+
+export const createVariant = async (
+	userId: number,
+	productId: number,
+	createVariantDto: CreateVariantDto,
+	options?: RequestInit,
+): Promise<createVariantResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
+	const res = await fetch(getCreateVariantUrl(userId, productId), {
+		...options,
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
+		body: JSON.stringify(createVariantDto),
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: createVariantResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as createVariantResponse
+}
+
+export const getCreateVariantMutationKey = () => ["createVariant"] as const
+
+export const getCreateVariantMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof createVariant>>,
+		TError,
+		CreateVariantMutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof createVariant>>,
+	TError,
+	CreateVariantMutationVariables,
+	TContext
+> => {
+	const mutationKey = getCreateVariantMutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof createVariant>>,
+		CreateVariantMutationVariables
+	> = (props) => {
+		const { userId, productId, data } = props ?? {}
+
+		return createVariant(userId, productId, data, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type CreateVariantMutationResult = NonNullable<
+	Awaited<ReturnType<typeof createVariant>>
+>
+export type CreateVariantMutationBody = CreateVariantDto
+export type CreateVariantMutationError = unknown
+export type CreateVariantMutationVariables = {
+	userId: number
+	productId: number
+	data: CreateVariantDto
+}
+
+export const useCreateVariant = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof createVariant>>,
+			TError,
+			CreateVariantMutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof createVariant>>,
+	TError,
+	CreateVariantMutationVariables,
+	TContext
+> => {
+	return useMutation(getCreateVariantMutationOptions(options), queryClient)
+}
+
+export type getVariantByIdResponse200 = {
+	data: VariantDto
+	status: 200
+}
+
+export type getVariantByIdResponseSuccess = getVariantByIdResponse200 & {
+	headers: Headers
+}
+
+export type getVariantByIdResponse = getVariantByIdResponseSuccess
+
+export const getGetVariantByIdUrl = (id: number) => {
+	return `http://localhost:3000/variants/${id}`
+}
+
+export const getVariantById = async (
+	id: number,
+	options?: RequestInit,
+): Promise<getVariantByIdResponse> => {
+	const res = await fetch(getGetVariantByIdUrl(id), {
+		...options,
+		method: "GET",
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: getVariantByIdResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as getVariantByIdResponse
+}
+
+export const getGetVariantByIdQueryKey = (id: number) => {
+	return [`http://localhost:3000/variants/${id}`] as const
+}
+
+export const getGetVariantByIdQueryOptions = <
+	TData = Awaited<ReturnType<typeof getVariantById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getVariantById>>, TError, TData>
+		>
+		fetch?: RequestInit
+	},
+) => {
+	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+
+	const queryKey = queryOptions?.queryKey ?? getGetVariantByIdQueryKey(id)
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getVariantById>>> = ({
+		signal,
+	}) => getVariantById(id, { signal, ...fetchOptions })
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: id !== null && id !== undefined,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof getVariantById>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetVariantByIdQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getVariantById>>
+>
+export type GetVariantByIdQueryError = unknown
+
+export function useGetVariantById<
+	TData = Awaited<ReturnType<typeof getVariantById>>,
+	TError = unknown,
+>(
+	id: number,
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getVariantById>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getVariantById>>,
+					TError,
+					Awaited<ReturnType<typeof getVariantById>>
+				>,
+				"initialData"
+			>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetVariantById<
+	TData = Awaited<ReturnType<typeof getVariantById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getVariantById>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getVariantById>>,
+					TError,
+					Awaited<ReturnType<typeof getVariantById>>
+				>,
+				"initialData"
+			>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetVariantById<
+	TData = Awaited<ReturnType<typeof getVariantById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getVariantById>>, TError, TData>
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetVariantById<
+	TData = Awaited<ReturnType<typeof getVariantById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getVariantById>>, TError, TData>
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+} {
+	const queryOptions = getGetVariantByIdQueryOptions(id, options)
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+	return withQueryKey(query, queryOptions.queryKey)
+}
+
+export type updateVariantResponse200 = {
+	data: VariantDto
+	status: 200
+}
+
+export type updateVariantResponseSuccess = updateVariantResponse200 & {
+	headers: Headers
+}
+
+export type updateVariantResponse = updateVariantResponseSuccess
+
+export const getUpdateVariantUrl = (id: number) => {
+	return `http://localhost:3000/variants/${id}`
+}
+
+export const updateVariant = async (
+	id: number,
+	updateVariantDto: UpdateVariantDto,
+	options?: RequestInit,
+): Promise<updateVariantResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
+	const res = await fetch(getUpdateVariantUrl(id), {
+		...options,
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
+		body: JSON.stringify(updateVariantDto),
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: updateVariantResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as updateVariantResponse
+}
+
+export const getUpdateVariantMutationKey = () => ["updateVariant"] as const
+
+export const getUpdateVariantMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof updateVariant>>,
+		TError,
+		UpdateVariantMutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof updateVariant>>,
+	TError,
+	UpdateVariantMutationVariables,
+	TContext
+> => {
+	const mutationKey = getUpdateVariantMutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof updateVariant>>,
+		UpdateVariantMutationVariables
+	> = (props) => {
+		const { id, data } = props ?? {}
+
+		return updateVariant(id, data, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type UpdateVariantMutationResult = NonNullable<
+	Awaited<ReturnType<typeof updateVariant>>
+>
+export type UpdateVariantMutationBody = UpdateVariantDto
+export type UpdateVariantMutationError = unknown
+export type UpdateVariantMutationVariables = {
+	id: number
+	data: UpdateVariantDto
+}
+
+export const useUpdateVariant = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof updateVariant>>,
+			TError,
+			UpdateVariantMutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof updateVariant>>,
+	TError,
+	UpdateVariantMutationVariables,
+	TContext
+> => {
+	return useMutation(getUpdateVariantMutationOptions(options), queryClient)
+}
+
+export type deleteVariantResponse200 = {
+	data: VariantDto
+	status: 200
+}
+
+export type deleteVariantResponseSuccess = deleteVariantResponse200 & {
+	headers: Headers
+}
+
+export type deleteVariantResponse = deleteVariantResponseSuccess
+
+export const getDeleteVariantUrl = (id: number) => {
+	return `http://localhost:3000/variants/${id}`
+}
+
+export const deleteVariant = async (
+	id: number,
+	options?: RequestInit,
+): Promise<deleteVariantResponse> => {
+	const res = await fetch(getDeleteVariantUrl(id), {
+		...options,
+		method: "DELETE",
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: deleteVariantResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as deleteVariantResponse
+}
+
+export const getDeleteVariantMutationKey = () => ["deleteVariant"] as const
+
+export const getDeleteVariantMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof deleteVariant>>,
+		TError,
+		DeleteVariantMutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof deleteVariant>>,
+	TError,
+	DeleteVariantMutationVariables,
+	TContext
+> => {
+	const mutationKey = getDeleteVariantMutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof deleteVariant>>,
+		DeleteVariantMutationVariables
+	> = (props) => {
+		const { id } = props ?? {}
+
+		return deleteVariant(id, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteVariantMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteVariant>>
+>
+
+export type DeleteVariantMutationError = unknown
+export type DeleteVariantMutationVariables = { id: number }
+
+export const useDeleteVariant = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof deleteVariant>>,
+			TError,
+			DeleteVariantMutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof deleteVariant>>,
+	TError,
+	DeleteVariantMutationVariables,
+	TContext
+> => {
+	return useMutation(getDeleteVariantMutationOptions(options), queryClient)
 }

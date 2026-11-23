@@ -30,6 +30,9 @@ export default defineConfig({
 						"/createdBy$/": () => faker.number.int({ min: 1, max: 10000 }),
 						"/username$/": () => faker.internet.username(),
 						"/email$/": () => faker.internet.email(),
+						"/productId$/": () => faker.number.int({ min: 1, max: 10000 }),
+						"/sku$/": () =>
+							faker.string.alphanumeric({ length: 8, casing: "upper" }),
 						"/description$/": () => faker.commerce.productDescription(),
 						"/url$/": () => faker.image.url({ width: 100, height: 100 }),
 					},
@@ -39,6 +42,12 @@ export default defineConfig({
 						},
 						ImageDto: {
 							properties: { name: () => faker.system.commonFileName("jpg") },
+						},
+						VariantDto: {
+							properties: {
+								name: () =>
+									`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`,
+							},
 						},
 						UserDto: {
 							properties: { name: () => faker.person.fullName() },

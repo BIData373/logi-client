@@ -10,4 +10,5 @@ export interface CreateImageDto {
 	url: string
 	name: string
 	isPrimary: boolean
+	productId?: number
 }
