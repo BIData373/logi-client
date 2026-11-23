@@ -45,11 +45,8 @@ export default function ProductLayout() {
 					</div>
 					<h2 className="font-semibold text-[20px]">דגמים</h2>
 					<ToggleGroup>
-						{[44, 45, 46, 47, 48, 49].map((mockShoeSize) => (
-							<ToggleGroupItem
-								value={mockShoeSize.toString()}
-								key={mockShoeSize}
-							>{`שחור / ${mockShoeSize}`}</ToggleGroupItem>
+						{product?.variants.map((variant) => (
+							<ToggleGroupItem key={variant.id}>{variant.name}</ToggleGroupItem>
 						))}
 					</ToggleGroup>
 
