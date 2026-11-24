@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useGetUserOrders } from "#/api/logiSawgger"
+import { useGetUserOrders } from "#/api"
 import { OrderCard } from "../logi/OrderCard"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
 
@@ -8,7 +8,7 @@ type TabKey = "done" | "pending" | "rejected"
 export default function OrdersLayout() {
 	const [activeTab, setActiveTab] = useState<TabKey>("pending")
 
-	const { data } = useGetUserOrders(1)
+	const { data } = useGetUserOrders({ id: 1 })
 	const orders = data?.data ?? []
 	const orderItems = orders.flatMap((order) => order.orderItems)
 
