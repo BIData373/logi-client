@@ -30,7 +30,7 @@ export const getCreateImageMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ createdBy: string }, CreateImageDto>(
-		"*/images/:createdBy",
+		"http://localhost:3000/api/images/:createdBy",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ createdBy: string }, CreateImageDto>

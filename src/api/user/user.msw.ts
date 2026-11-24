@@ -82,7 +82,7 @@ export const getCreateUserMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<PathParams, CreateUserDto>(
-		"*/users",
+		"http://localhost:3000/api/users",
 		async (
 			info: Parameters<HttpResponseResolver<PathParams, CreateUserDto>>[0],
 		) => {
@@ -108,7 +108,7 @@ export const getGetUserOrdersMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"*/users/:id/orders",
+		"http://localhost:3000/api/users/:id/orders",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

@@ -4,6 +4,7 @@ import { defineConfig } from "orval"
 config()
 
 const API_URL = process.env.VITE_API_BASE_URL ?? "http://localhost:3000"
+const API_PREFIX = process.env.VITE_API_PREFIX ?? ""
 
 export default defineConfig({
 	logi: {
@@ -14,7 +15,9 @@ export default defineConfig({
 			httpClient: "axios",
 			mock: {
 				indexMockFiles: true,
-				generators: [{ type: "msw" }],
+				generators: [
+					{ type: "msw", baseUrl: new URL(API_PREFIX, API_URL).toString() },
+				],
 			},
 			namingConvention: "kebab-case",
 			formatter: "biome",

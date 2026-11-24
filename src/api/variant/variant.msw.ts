@@ -125,7 +125,7 @@ export const getCreateVariantMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string; productId: string }, CreateVariantDto>(
-		"*/variants/:userId/:productId",
+		"http://localhost:3000/api/variants/:userId/:productId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<
@@ -156,7 +156,7 @@ export const getGetVariantByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"*/variants/:id",
+		"http://localhost:3000/api/variants/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -182,7 +182,7 @@ export const getUpdateVariantMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateVariantDto>(
-		"*/variants/:id",
+		"http://localhost:3000/api/variants/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateVariantDto>
@@ -210,7 +210,7 @@ export const getDeleteVariantMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"*/variants/:id",
+		"http://localhost:3000/api/variants/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
