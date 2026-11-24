@@ -10,16 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as CartRouteImport } from './routes/cart'
 import { Route as AppProductsRouteImport } from './routes/_app/_products'
 import { Route as AppCategoriesRouteImport } from './routes/_app/categories'
 import { Route as AppOrdersRouteImport } from './routes/_app/orders'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
-import { Route as CartCartIdRouteImport } from './routes/cart/$cartId'
 import { Route as OrderCompletedOrderIdRouteImport } from './routes/order-completed/$orderId'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppProductsRoute = AppProductsRouteImport.update({
@@ -41,11 +46,6 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
-const CartCartIdRoute = CartCartIdRouteImport.update({
-  id: '/cart/$cartId',
-  path: '/cart/$cartId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OrderCompletedOrderIdRoute = OrderCompletedOrderIdRouteImport.update({
   id: '/order-completed/$orderId',
   path: '/order-completed/$orderId',
@@ -59,30 +59,30 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppProductsRoute
+  '/cart': typeof CartRoute
   '/categories': typeof AppCategoriesRoute
   '/orders': typeof AppOrdersRoute
   '/profile': typeof AppProfileRoute
-  '/cart/$cartId': typeof CartCartIdRoute
   '/order-completed/$orderId': typeof OrderCompletedOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppProductsRoute
+  '/cart': typeof CartRoute
   '/categories': typeof AppCategoriesRoute
   '/orders': typeof AppOrdersRoute
   '/profile': typeof AppProfileRoute
-  '/cart/$cartId': typeof CartCartIdRoute
   '/order-completed/$orderId': typeof OrderCompletedOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/cart': typeof CartRoute
   '/_app/_products': typeof AppProductsRoute
   '/_app/categories': typeof AppCategoriesRoute
   '/_app/orders': typeof AppOrdersRoute
   '/_app/profile': typeof AppProfileRoute
-  '/cart/$cartId': typeof CartCartIdRoute
   '/order-completed/$orderId': typeof OrderCompletedOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -90,36 +90,36 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cart'
     | '/categories'
     | '/orders'
     | '/profile'
-    | '/cart/$cartId'
     | '/order-completed/$orderId'
     | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cart'
     | '/categories'
     | '/orders'
     | '/profile'
-    | '/cart/$cartId'
     | '/order-completed/$orderId'
     | '/products/$productId'
   id:
     | '__root__'
     | '/_app'
+    | '/cart'
     | '/_app/_products'
     | '/_app/categories'
     | '/_app/orders'
     | '/_app/profile'
-    | '/cart/$cartId'
     | '/order-completed/$orderId'
     | '/products/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
-  CartCartIdRoute: typeof CartCartIdRoute
+  CartRoute: typeof CartRoute
   OrderCompletedOrderIdRoute: typeof OrderCompletedOrderIdRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
@@ -131,6 +131,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/_products': {
@@ -160,13 +167,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile'
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
-    }
-    '/cart/$cartId': {
-      id: '/cart/$cartId'
-      path: '/cart/$cartId'
-      fullPath: '/cart/$cartId'
-      preLoaderRoute: typeof CartCartIdRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/order-completed/$orderId': {
       id: '/order-completed/$orderId'
@@ -203,7 +203,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
-  CartCartIdRoute: CartCartIdRoute,
+  CartRoute: CartRoute,
   OrderCompletedOrderIdRoute: OrderCompletedOrderIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }

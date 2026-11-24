@@ -1,6 +1,5 @@
 import { useNavigate } from "@tanstack/react-router"
 import { ShoppingBasket, ThumbsUp, User } from "lucide-react"
-import { CartItem } from "../logi/CartItem"
 import { CheckoutBar } from "../logi/CheckoutBar"
 import { Header } from "../logi/Header"
 import { InfoRow } from "../logi/InfoRow"
@@ -9,15 +8,6 @@ import { Separator } from "../ui/separator"
 
 export default function CartLayout() {
 	const navigate = useNavigate()
-
-	function handleGoToProduct(productId: number) {
-		navigate({
-			to: "/products/$productId",
-			params: {
-				productId,
-			},
-		})
-	}
 
 	function handleGoToSummaryPage(orderId: number) {
 		navigate({

@@ -29,7 +29,7 @@ function AppLayout() {
 		navigate({
 			to: `/cart/$cartId`,
 			params: {
-				cartId: 1,
+				cartId: "1",
 			},
 		})
 	}
