@@ -14,7 +14,7 @@ export default function CartLayout() {
 		navigate({
 			to: "/products/$productId",
 			params: {
-				productId: productId.toString(),
+				productId,
 			},
 		})
 	}
@@ -23,7 +23,7 @@ export default function CartLayout() {
 		navigate({
 			to: "/order-completed/$orderId",
 			params: {
-				orderId: orderId.toString(),
+				orderId,
 			},
 		})
 	}
@@ -48,11 +48,7 @@ export default function CartLayout() {
 					סל קניות
 				</InfoRow>
 				<CartItem
-					item={{
-						title: "נעלי חיר בקטע מוגזם",
-						subtitle: "דגם: אדום",
-						imageSrc: "/boots.png",
-					}}
+					cartItem={}
 					onReplaceVariant={() => handleGoToProduct(1)}
 				/>
 			</div>

@@ -1,13 +1,27 @@
-import { useNavigate } from "@tanstack/react-router"
+import { notFound, useNavigate, useParams } from "@tanstack/react-router"
 import { CheckCircle2, ThumbsUp, Ticket, User } from "lucide-react"
 import { Separator } from "#/components/ui/separator"
 import { InfoRow } from "../logi/InfoRow"
 import { OrderLineItem } from "../logi/OrderLineItem"
 import { Button } from "../ui/button"
 import { Card, CardTitle } from "../ui/card"
+import { useGetOrderById } from "#/api/logiSawgger"
 
 export default function OrderCompletedLayout() {
 	const navigate = useNavigate()
+
+	const { orderId } = useParams({ from: "/order-completed/$orderId" })
+	const { data, isPending } = useGetOrderById(orderId)
+
+	if (isPending) {
+		return null
+	}
+
+	if (!data) {
+		throw notFound()
+	}
+
+	const order = data.data
 
 	function handleGoHome() {
 		navigate({
@@ -24,11 +38,15 @@ export default function OrderCompletedLayout() {
 					ההזמנה שלך נקלטה בהצלחה וממתינה לאישור
 				</h2>
 				<Card className="w-full max-h-85 overflow-y-scroll">
-					<OrderLineItem
-						title="נעלי חיר צבאיות"
-						subtitle="שחור 44"
-						imageSrc="/boots.png"
-					/>
+					{order.orderItems.map((orderItem) => (
+						<div key={orderItem.id}>
+							<OrderLineItem
+								variant={orderItem.variant}
+								quantity={orderItem.quantity}
+							/>
+							<Separator />
+						</div>
+					))}
 				</Card>
 				<Card className="w-full">
 					<CardTitle className="px-3 py-1.5">פרטי הזמנה:</CardTitle>
