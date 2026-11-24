@@ -8,8 +8,7 @@ type TabKey = "done" | "pending" | "rejected"
 export default function OrdersLayout() {
 	const [activeTab, setActiveTab] = useState<TabKey>("pending")
 
-	const { data } = useGetUserOrders({ id: 1 })
-	const orders = data?.data ?? []
+	const { data: orders = [] } = useGetUserOrders({ id: 1 })
 	const orderItems = orders.flatMap((order) => order.orderItems)
 
 	return (
