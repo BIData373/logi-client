@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useGetUserOrders } from "#/api/logiSawgger"
 import { OrderCard } from "../logi/OrderCard"
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
 
@@ -6,6 +7,10 @@ type TabKey = "done" | "pending" | "rejected"
 
 export default function OrdersLayout() {
 	const [activeTab, setActiveTab] = useState<TabKey>("pending")
+
+	const { data } = useGetUserOrders(1)
+	const orders = data?.data ?? []
+	const orderItems = orders.flatMap((order) => order.orderItems)
 
 	return (
 		<div className="flex flex-col gap-4 p-4">
@@ -20,18 +25,8 @@ export default function OrdersLayout() {
 				</TabsList>
 			</Tabs>
 			<div className="flex flex-col gap-2">
-				{[1, 2, 3].map((i) => (
-					<OrderCard
-						key={i}
-						item={{
-							title: "כלב חמוד",
-							subtitle: "שחור 44",
-							imageSrc: "/dog.jpg",
-							quantity: 1,
-						}}
-						statusLabel="ממתין לאישור"
-						date={new Date().toLocaleDateString()}
-					/>
+				{orderItems.map((orderItem) => (
+					<OrderCard item={orderItem} key={orderItem.id} />
 				))}
 			</div>
 		</div>
