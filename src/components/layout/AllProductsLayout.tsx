@@ -95,8 +95,7 @@ export default function AllProductsLayout() {
 				{filteredProducts.map((product) => (
 					<ProductCard
 						key={product.id}
-						title={product.name}
-						imageSrc={product.images[0].url}
+						product={product}
 						onClick={() => handleMoveToProductPage(product.id)}
 					/>
 				))}
