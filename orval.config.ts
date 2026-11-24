@@ -7,18 +7,49 @@ const API_URL = process.env.VITE_API_BASE_URL ?? "http://localhost:3000"
 
 export default defineConfig({
 	logi: {
-		input: {
-			target: `${API_URL}/open-api/json`,
-		},
 		output: {
+			mode: "tags-split",
+			target: "src/api/",
+			client: "react-query",
+			mock: {
+				indexMockFiles: true,
+				generators: [{ type: "msw" }],
+			},
+			namingConvention: "kebab-case",
+			formatter: "biome",
+			clean: true,
+			headers: true,
 			schemas: {
 				path: "src/api/model",
 				type: "typescript",
 			},
-			client: "react-query",
-			formatter: "biome",
-			clean: true,
-			headers: false,
+			override: {
+				useDates: true,
+				useDeprecatedOperations: false,
+				useNamedParameters: true,
+				preserveReadonlyRequestBodies: "strip",
+				formData: {
+					path: "src/form-data.ts",
+					name: "serializeFormData",
+				},
+				query: {
+					usePrefetch: false,
+					useInvalidate: false,
+					useSetQueryData: false,
+					useGetQueryData: false,
+
+					useInfinite: false,
+					useSuspenseQuery: false,
+					useSuspenseInfiniteQuery: false,
+
+					shouldExportKeys: true,
+					shouldSplitQueryKey: false,
+					useOperationIdAsQueryKey: false,
+				},
+			},
+		},
+		input: {
+			target: `${API_URL}/api-json`,
 		},
 	},
 })
