@@ -1,6 +1,6 @@
 import { notFound, useNavigate, useParams } from "@tanstack/react-router"
 import { Heart, Share } from "lucide-react"
-import { useGetProductById } from "#/api/logiSawgger"
+import { useGetProductById } from "#/api"
 import { CheckoutBar } from "../logi/CheckoutBar"
 import { Header } from "../logi/Header"
 import IconButton from "../logi/IconButton"
@@ -13,7 +13,7 @@ export default function ProductLayout() {
 	const navigate = useNavigate()
 
 	const { productId } = useParams({ from: "/products/$productId" })
-	const { data, isLoading } = useGetProductById(productId)
+	const { data, isLoading } = useGetProductById({ id: productId })
 
 	function handleBack() {
 		navigate({ to: "/" })

@@ -1,13 +1,12 @@
-import type { ImageDto } from "#/api/model"
+import { cn } from "cn"
 import { useEffect, useState } from "react"
+import type { ImageDto } from "#/api/model"
 import {
 	Carousel,
+	type CarouselApi,
 	CarouselContent,
 	CarouselItem,
-	type CarouselApi,
 } from "../ui/carousel"
-import { Circle } from "lucide-react"
-import { cn } from "cn"
 
 interface ProductImagesCarouselProps {
 	images: ImageDto[]
