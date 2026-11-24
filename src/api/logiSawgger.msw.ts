@@ -23,6 +23,7 @@ import type {
 	OrderDto,
 	OrderItemDto,
 	ProductDto,
+	ProductDtoWithVariant,
 	UpdateOrderDto,
 	UpdateOrderItemDto,
 	UpdateProductDto,
@@ -71,6 +72,19 @@ export const getGetUserOrdersResponseMock = (): OrderDto[] =>
 				sku: (() =>
 					faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 				isPrivate: faker.datatype.boolean(),
+				product: {
+					id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+					name: (() => faker.commerce.productName())(),
+					createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+					description: (() => faker.commerce.productDescription())(),
+					images: Array.from(
+						{ length: faker.number.int({ min: 1, max: 10 }) },
+						(_, i) => i + 1,
+					).map(() => ({
+						name: (() => faker.system.commonFileName("jpg"))(),
+						url: (() => faker.image.url({ width: 100, height: 100 }))(),
+					})),
+				},
 			},
 		})),
 	}))
@@ -88,18 +102,6 @@ export const getCreateProductResponseMock = (
 	).map(() => ({
 		name: (() => faker.system.commonFileName("jpg"))(),
 		url: (() => faker.image.url({ width: 100, height: 100 }))(),
-	})),
-	variants: Array.from(
-		{ length: faker.number.int({ min: 1, max: 10 }) },
-		(_, i) => i + 1,
-	).map(() => ({
-		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
-		name: (() =>
-			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
-		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
-		description: (() => faker.commerce.productDescription())(),
-		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
-		isPrivate: faker.datatype.boolean(),
 	})),
 	...overrideResponse,
 })
@@ -120,25 +122,13 @@ export const getGetAllProductsResponseMock = (): ProductDto[] =>
 			name: (() => faker.system.commonFileName("jpg"))(),
 			url: (() => faker.image.url({ width: 100, height: 100 }))(),
 		})),
-		variants: Array.from(
-			{ length: faker.number.int({ min: 1, max: 10 }) },
-			(_, i) => i + 1,
-		).map(() => ({
-			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
-			name: (() =>
-				`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
-			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
-			description: (() => faker.commerce.productDescription())(),
-			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
-			isPrivate: faker.datatype.boolean(),
-		})),
 	}))
 
 export const getGetProductByIdResponseMock = (
-	overrideResponse: Partial<Extract<ProductDto, object>> = {},
-): ProductDto => ({
+	overrideResponse: Partial<Extract<ProductDtoWithVariant, object>> = {},
+): ProductDtoWithVariant => ({
 	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
-	name: (() => faker.commerce.productName())(),
+	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
 	description: (() => faker.commerce.productDescription())(),
 	images: Array.from(
@@ -159,6 +149,19 @@ export const getGetProductByIdResponseMock = (
 		description: (() => faker.commerce.productDescription())(),
 		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
 	})),
 	...overrideResponse,
 })
@@ -177,18 +180,6 @@ export const getUpdateProductResponseMock = (
 		name: (() => faker.system.commonFileName("jpg"))(),
 		url: (() => faker.image.url({ width: 100, height: 100 }))(),
 	})),
-	variants: Array.from(
-		{ length: faker.number.int({ min: 1, max: 10 }) },
-		(_, i) => i + 1,
-	).map(() => ({
-		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
-		name: (() =>
-			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
-		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
-		description: (() => faker.commerce.productDescription())(),
-		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
-		isPrivate: faker.datatype.boolean(),
-	})),
 	...overrideResponse,
 })
 
@@ -205,18 +196,6 @@ export const getDeleteProductResponseMock = (
 	).map(() => ({
 		name: (() => faker.system.commonFileName("jpg"))(),
 		url: (() => faker.image.url({ width: 100, height: 100 }))(),
-	})),
-	variants: Array.from(
-		{ length: faker.number.int({ min: 1, max: 10 }) },
-		(_, i) => i + 1,
-	).map(() => ({
-		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
-		name: (() =>
-			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
-		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
-		description: (() => faker.commerce.productDescription())(),
-		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
-		isPrivate: faker.datatype.boolean(),
 	})),
 	...overrideResponse,
 })
@@ -239,6 +218,19 @@ export const getCreateVariantResponseMock = (
 	description: (() => faker.commerce.productDescription())(),
 	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 	isPrivate: faker.datatype.boolean(),
+	product: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() => faker.commerce.productName())(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		images: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			name: (() => faker.system.commonFileName("jpg"))(),
+			url: (() => faker.image.url({ width: 100, height: 100 }))(),
+		})),
+	},
 	...overrideResponse,
 })
 
@@ -252,6 +244,19 @@ export const getGetVariantByIdResponseMock = (
 	description: (() => faker.commerce.productDescription())(),
 	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 	isPrivate: faker.datatype.boolean(),
+	product: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() => faker.commerce.productName())(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		images: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			name: (() => faker.system.commonFileName("jpg"))(),
+			url: (() => faker.image.url({ width: 100, height: 100 }))(),
+		})),
+	},
 	...overrideResponse,
 })
 
@@ -265,6 +270,19 @@ export const getUpdateVariantResponseMock = (
 	description: (() => faker.commerce.productDescription())(),
 	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 	isPrivate: faker.datatype.boolean(),
+	product: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() => faker.commerce.productName())(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		images: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			name: (() => faker.system.commonFileName("jpg"))(),
+			url: (() => faker.image.url({ width: 100, height: 100 }))(),
+		})),
+	},
 	...overrideResponse,
 })
 
@@ -278,6 +296,19 @@ export const getDeleteVariantResponseMock = (
 	description: (() => faker.commerce.productDescription())(),
 	sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 	isPrivate: faker.datatype.boolean(),
+	product: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() => faker.commerce.productName())(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		images: Array.from(
+			{ length: faker.number.int({ min: 1, max: 10 }) },
+			(_, i) => i + 1,
+		).map(() => ({
+			name: (() => faker.system.commonFileName("jpg"))(),
+			url: (() => faker.image.url({ width: 100, height: 100 }))(),
+		})),
+	},
 	...overrideResponse,
 })
 
@@ -309,6 +340,19 @@ export const getCreateOrderResponseMock = (
 			description: (() => faker.commerce.productDescription())(),
 			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 			isPrivate: faker.datatype.boolean(),
+			product: {
+				id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				name: (() => faker.commerce.productName())(),
+				createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				description: (() => faker.commerce.productDescription())(),
+				images: Array.from(
+					{ length: faker.number.int({ min: 1, max: 10 }) },
+					(_, i) => i + 1,
+				).map(() => ({
+					name: (() => faker.system.commonFileName("jpg"))(),
+					url: (() => faker.image.url({ width: 100, height: 100 }))(),
+				})),
+			},
 		},
 	})),
 	...overrideResponse,
@@ -342,6 +386,19 @@ export const getGetOrderByIdResponseMock = (
 			description: (() => faker.commerce.productDescription())(),
 			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 			isPrivate: faker.datatype.boolean(),
+			product: {
+				id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				name: (() => faker.commerce.productName())(),
+				createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				description: (() => faker.commerce.productDescription())(),
+				images: Array.from(
+					{ length: faker.number.int({ min: 1, max: 10 }) },
+					(_, i) => i + 1,
+				).map(() => ({
+					name: (() => faker.system.commonFileName("jpg"))(),
+					url: (() => faker.image.url({ width: 100, height: 100 }))(),
+				})),
+			},
 		},
 	})),
 	...overrideResponse,
@@ -375,6 +432,19 @@ export const getUpdateOrderResponseMock = (
 			description: (() => faker.commerce.productDescription())(),
 			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 			isPrivate: faker.datatype.boolean(),
+			product: {
+				id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				name: (() => faker.commerce.productName())(),
+				createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				description: (() => faker.commerce.productDescription())(),
+				images: Array.from(
+					{ length: faker.number.int({ min: 1, max: 10 }) },
+					(_, i) => i + 1,
+				).map(() => ({
+					name: (() => faker.system.commonFileName("jpg"))(),
+					url: (() => faker.image.url({ width: 100, height: 100 }))(),
+				})),
+			},
 		},
 	})),
 	...overrideResponse,
@@ -408,6 +478,19 @@ export const getDeleteOrderResponseMock = (
 			description: (() => faker.commerce.productDescription())(),
 			sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 			isPrivate: faker.datatype.boolean(),
+			product: {
+				id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				name: (() => faker.commerce.productName())(),
+				createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+				description: (() => faker.commerce.productDescription())(),
+				images: Array.from(
+					{ length: faker.number.int({ min: 1, max: 10 }) },
+					(_, i) => i + 1,
+				).map(() => ({
+					name: (() => faker.system.commonFileName("jpg"))(),
+					url: (() => faker.image.url({ width: 100, height: 100 }))(),
+				})),
+			},
 		},
 	})),
 	...overrideResponse,
@@ -431,6 +514,19 @@ export const getCreateOrderItemResponseMock = (
 		description: (() => faker.commerce.productDescription())(),
 		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
 	},
 	...overrideResponse,
 })
@@ -453,6 +549,19 @@ export const getGetOrderItemByIdResponseMock = (
 		description: (() => faker.commerce.productDescription())(),
 		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
 	},
 	...overrideResponse,
 })
@@ -475,6 +584,19 @@ export const getUpdateOrderItemResponseMock = (
 		description: (() => faker.commerce.productDescription())(),
 		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
 	},
 	...overrideResponse,
 })
@@ -497,6 +619,19 @@ export const getDeleteOrderItemResponseMock = (
 		description: (() => faker.commerce.productDescription())(),
 		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
 		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
 	},
 	...overrideResponse,
 })
@@ -626,10 +761,10 @@ export const getGetAllProductsMockHandler = (
 
 export const getGetProductByIdMockHandler = (
 	overrideResponse?:
-		| ProductDto
+		| ProductDtoWithVariant
 		| ((
 				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
-		  ) => Promise<ProductDto> | ProductDto),
+		  ) => Promise<ProductDtoWithVariant> | ProductDtoWithVariant),
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(

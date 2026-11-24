@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 import type { ImageDto } from "./imageDto.ts"
-import type { VariantDto } from "./variantDto.ts"
 
 export interface ProductDto {
 	id: number
@@ -14,5 +13,4 @@ export interface ProductDto {
 	createdBy: number
 	description: string
 	images: ImageDto[]
-	variants: VariantDto[]
 }

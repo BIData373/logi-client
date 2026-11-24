@@ -5,6 +5,7 @@
  * The cats API description
  * OpenAPI spec version: 1.0
  */
+import type { ProductDto } from "./productDto.ts"
 
 export interface VariantDto {
 	id: number
@@ -13,4 +14,5 @@ export interface VariantDto {
 	description: string
 	sku: string
 	isPrivate: boolean
+	product: ProductDto
 }

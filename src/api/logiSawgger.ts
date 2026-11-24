@@ -32,6 +32,7 @@ import type {
 	OrderDto,
 	OrderItemDto,
 	ProductDto,
+	ProductDtoWithVariant,
 	UpdateOrderDto,
 	UpdateOrderItemDto,
 	UpdateProductDto,
@@ -797,7 +798,7 @@ export function useGetAllProducts<
 }
 
 export type getProductByIdResponse200 = {
-	data: ProductDto
+	data: ProductDtoWithVariant
 	status: 200
 }
 
