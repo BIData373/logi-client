@@ -18,6 +18,10 @@ import type {
 	UseQueryResult,
 } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
+import type { ErrorType } from "../../axios.ts"
+import { sendRequest } from "../../axios.ts"
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 const withQueryKey = <T extends object, K>(
 	query: T,
@@ -37,40 +41,11 @@ const withQueryKey = <T extends object, K>(
 	return result
 }
 
-export type appControllerGetRootResponse200 = {
-	data: void
-	status: 200
-}
-
-export type appControllerGetRootResponseSuccess =
-	appControllerGetRootResponse200 & {
-		headers: Headers
-	}
-
-export type appControllerGetRootResponse = appControllerGetRootResponseSuccess
-
-export const getAppControllerGetRootUrl = () => {
-	return `/`
-}
-
-export const appControllerGetRoot = async (
-	options?: RequestInit,
-): Promise<appControllerGetRootResponse> => {
-	const res = await fetch(getAppControllerGetRootUrl(), {
-		...options,
-		method: "GET",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: appControllerGetRootResponse["data"] = body
-		? JSON.parse(body)
-		: undefined
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as appControllerGetRootResponse
+export const appControllerGetRoot = (
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<void>({ url: `/`, method: "GET", signal }, options)
 }
 
 export const getAppControllerGetRootQueryKey = () => {
@@ -79,7 +54,7 @@ export const getAppControllerGetRootQueryKey = () => {
 
 export const getAppControllerGetRootQueryOptions = <
 	TData = Awaited<ReturnType<typeof appControllerGetRoot>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(options?: {
 	query?: Partial<
 		UseQueryOptions<
@@ -88,15 +63,15 @@ export const getAppControllerGetRootQueryOptions = <
 			TData
 		>
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+	const { query: queryOptions, request: requestOptions } = options ?? {}
 
 	const queryKey = queryOptions?.queryKey ?? getAppControllerGetRootQueryKey()
 
 	const queryFn: QueryFunction<
 		Awaited<ReturnType<typeof appControllerGetRoot>>
-	> = ({ signal }) => appControllerGetRoot({ signal, ...fetchOptions })
+	> = ({ signal }) => appControllerGetRoot(requestOptions, signal)
 
 	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
 		Awaited<ReturnType<typeof appControllerGetRoot>>,
@@ -108,11 +83,11 @@ export const getAppControllerGetRootQueryOptions = <
 export type AppControllerGetRootQueryResult = NonNullable<
 	Awaited<ReturnType<typeof appControllerGetRoot>>
 >
-export type AppControllerGetRootQueryError = unknown
+export type AppControllerGetRootQueryError = ErrorType<unknown>
 
 export function useAppControllerGetRoot<
 	TData = Awaited<ReturnType<typeof appControllerGetRoot>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options: {
 		query: Partial<
@@ -130,7 +105,7 @@ export function useAppControllerGetRoot<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -138,7 +113,7 @@ export function useAppControllerGetRoot<
 }
 export function useAppControllerGetRoot<
 	TData = Awaited<ReturnType<typeof appControllerGetRoot>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options?: {
 		query?: Partial<
@@ -156,7 +131,7 @@ export function useAppControllerGetRoot<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -164,7 +139,7 @@ export function useAppControllerGetRoot<
 }
 export function useAppControllerGetRoot<
 	TData = Awaited<ReturnType<typeof appControllerGetRoot>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options?: {
 		query?: Partial<
@@ -174,7 +149,7 @@ export function useAppControllerGetRoot<
 				TData
 			>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -182,7 +157,7 @@ export function useAppControllerGetRoot<
 }
 export function useAppControllerGetRoot<
 	TData = Awaited<ReturnType<typeof appControllerGetRoot>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options?: {
 		query?: Partial<
@@ -192,7 +167,7 @@ export function useAppControllerGetRoot<
 				TData
 			>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

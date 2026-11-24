@@ -13,78 +13,39 @@ import type {
 	UseMutationResult,
 } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
+import type { ErrorType } from "../../axios.ts"
 
+import { sendRequest } from "../../axios.ts"
 import type {
 	CreateImageDto,
 	CreateImagePathParameters,
 	ImageDto,
 } from "../model"
 
-export type createImageResponse200 = {
-	data: ImageDto
-	status: 200
-}
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
-export type createImageResponseSuccess = createImageResponse200 & {
-	headers: Headers
-}
-
-export type createImageResponse = createImageResponseSuccess
-
-export const getCreateImageUrl = ({ createdBy }: CreateImagePathParameters) => {
-	return `/images/${createdBy}`
-}
-
-export const createImage = async (
+export const createImage = (
 	{ createdBy }: CreateImagePathParameters,
 	createImageDto: CreateImageDto,
-	options?: RequestInit,
-): Promise<createImageResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {}
-		if (h instanceof Headers) return Object.fromEntries(h.entries())
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			)
-		}
-		const headers: Record<string, string | readonly string[]> = {}
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value
-		}
-		return headers
-	}
-	const res = await fetch(getCreateImageUrl({ createdBy }), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<ImageDto>(
+		{
+			url: `/images/${createdBy}`,
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			data: createImageDto,
+			signal,
 		},
-		body: JSON.stringify(createImageDto),
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: createImageResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createImageResponse
+		options,
+	)
 }
 
 export const getCreateImageMutationKey = () => ["createImage"] as const
 
 export const getCreateImageMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -93,7 +54,7 @@ export const getCreateImageMutationOptions = <
 		CreateImageMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof createImage>>,
 	TError,
@@ -101,13 +62,13 @@ export const getCreateImageMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getCreateImageMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof createImage>>,
@@ -115,7 +76,7 @@ export const getCreateImageMutationOptions = <
 	> = (props) => {
 		const { pathParams, data } = props ?? {}
 
-		return createImage(pathParams, data, fetchOptions)
+		return createImage(pathParams, data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -125,13 +86,13 @@ export type CreateImageMutationResult = NonNullable<
 	Awaited<ReturnType<typeof createImage>>
 >
 export type CreateImageMutationBody = CreateImageDto
-export type CreateImageMutationError = unknown
+export type CreateImageMutationError = ErrorType<unknown>
 export type CreateImageMutationVariables = {
 	pathParams: CreateImagePathParameters
 	data: CreateImageDto
 }
 
-export const useCreateImage = <TError = unknown, TContext = unknown>(
+export const useCreateImage = <TError = ErrorType<unknown>, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof createImage>>,
@@ -139,7 +100,7 @@ export const useCreateImage = <TError = unknown, TContext = unknown>(
 			CreateImageMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<

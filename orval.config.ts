@@ -11,6 +11,7 @@ export default defineConfig({
 			mode: "tags-split",
 			target: "src/api/",
 			client: "react-query",
+			httpClient: "axios",
 			mock: {
 				indexMockFiles: true,
 				generators: [{ type: "msw" }],
@@ -28,6 +29,10 @@ export default defineConfig({
 				useDeprecatedOperations: false,
 				useNamedParameters: true,
 				preserveReadonlyRequestBodies: "strip",
+				mutator: {
+					path: "src/axios.ts",
+					name: "sendRequest",
+				},
 				formData: {
 					path: "src/form-data.ts",
 					name: "serializeFormData",

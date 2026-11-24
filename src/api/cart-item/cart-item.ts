@@ -21,7 +21,9 @@ import type {
 	UseQueryResult,
 } from "@tanstack/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import type { ErrorType } from "../../axios.ts"
 
+import { sendRequest } from "../../axios.ts"
 import type {
 	CartItemDto,
 	CreateCartItemDto,
@@ -31,6 +33,8 @@ import type {
 	UpdateCartItemDto,
 	UpdateCartItemPathParameters,
 } from "../model"
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 const withQueryKey = <T extends object, K>(
 	query: T,
@@ -50,75 +54,29 @@ const withQueryKey = <T extends object, K>(
 	return result
 }
 
-export type createOrderItem2Response200 = {
-	data: CartItemDto
-	status: 200
-}
-
-export type createOrderItem2ResponseSuccess = createOrderItem2Response200 & {
-	headers: Headers
-}
-
-export type createOrderItem2Response = createOrderItem2ResponseSuccess
-
-export const getCreateOrderItem2Url = ({
-	userId,
-	variantId,
-}: CreateOrderItem2PathParameters) => {
-	return `/cart-items/${userId}/${variantId}`
-}
-
-export const createOrderItem2 = async (
+export const createOrderItem2 = (
 	{ userId, variantId }: CreateOrderItem2PathParameters,
 	createCartItemDto: CreateCartItemDto,
-	options?: RequestInit,
-): Promise<createOrderItem2Response> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {}
-		if (h instanceof Headers) return Object.fromEntries(h.entries())
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			)
-		}
-		const headers: Record<string, string | readonly string[]> = {}
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value
-		}
-		return headers
-	}
-	const res = await fetch(getCreateOrderItem2Url({ userId, variantId }), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<CartItemDto>(
+		{
+			url: `/cart-items/${userId}/${variantId}`,
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			data: createCartItemDto,
+			signal,
 		},
-		body: JSON.stringify(createCartItemDto),
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: createOrderItem2Response["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createOrderItem2Response
+		options,
+	)
 }
 
 export const getCreateOrderItem2MutationKey = () =>
 	["createOrderItem2"] as const
 
 export const getCreateOrderItem2MutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -127,7 +85,7 @@ export const getCreateOrderItem2MutationOptions = <
 		CreateOrderItem2MutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof createOrderItem2>>,
 	TError,
@@ -135,13 +93,13 @@ export const getCreateOrderItem2MutationOptions = <
 	TContext
 > => {
 	const mutationKey = getCreateOrderItem2MutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof createOrderItem2>>,
@@ -149,7 +107,7 @@ export const getCreateOrderItem2MutationOptions = <
 	> = (props) => {
 		const { pathParams, data } = props ?? {}
 
-		return createOrderItem2(pathParams, data, fetchOptions)
+		return createOrderItem2(pathParams, data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -159,13 +117,16 @@ export type CreateOrderItem2MutationResult = NonNullable<
 	Awaited<ReturnType<typeof createOrderItem2>>
 >
 export type CreateOrderItem2MutationBody = CreateCartItemDto
-export type CreateOrderItem2MutationError = unknown
+export type CreateOrderItem2MutationError = ErrorType<unknown>
 export type CreateOrderItem2MutationVariables = {
 	pathParams: CreateOrderItem2PathParameters
 	data: CreateCartItemDto
 }
 
-export const useCreateOrderItem2 = <TError = unknown, TContext = unknown>(
+export const useCreateOrderItem2 = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof createOrderItem2>>,
@@ -173,7 +134,7 @@ export const useCreateOrderItem2 = <TError = unknown, TContext = unknown>(
 			CreateOrderItem2MutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
@@ -184,40 +145,15 @@ export const useCreateOrderItem2 = <TError = unknown, TContext = unknown>(
 > => {
 	return useMutation(getCreateOrderItem2MutationOptions(options), queryClient)
 }
-export type getCartItemByIdResponse200 = {
-	data: CartItemDto
-	status: 200
-}
-
-export type getCartItemByIdResponseSuccess = getCartItemByIdResponse200 & {
-	headers: Headers
-}
-
-export type getCartItemByIdResponse = getCartItemByIdResponseSuccess
-
-export const getGetCartItemByIdUrl = ({
-	id,
-}: GetCartItemByIdPathParameters) => {
-	return `/cart-items/${id}`
-}
-
-export const getCartItemById = async (
+export const getCartItemById = (
 	{ id }: GetCartItemByIdPathParameters,
-	options?: RequestInit,
-): Promise<getCartItemByIdResponse> => {
-	const res = await fetch(getGetCartItemByIdUrl({ id }), {
-		...options,
-		method: "GET",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: getCartItemByIdResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getCartItemByIdResponse
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<CartItemDto>(
+		{ url: `/cart-items/${id}`, method: "GET", signal },
+		options,
+	)
 }
 
 export const getGetCartItemByIdQueryKey = ({
@@ -228,7 +164,7 @@ export const getGetCartItemByIdQueryKey = ({
 
 export const getGetCartItemByIdQueryOptions = <
 	TData = Awaited<ReturnType<typeof getCartItemById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetCartItemByIdPathParameters,
 	options?: {
@@ -239,16 +175,16 @@ export const getGetCartItemByIdQueryOptions = <
 				TData
 			>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+	const { query: queryOptions, request: requestOptions } = options ?? {}
 
 	const queryKey = queryOptions?.queryKey ?? getGetCartItemByIdQueryKey({ id })
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCartItemById>>> = ({
 		signal,
-	}) => getCartItemById({ id }, { signal, ...fetchOptions })
+	}) => getCartItemById({ id }, requestOptions, signal)
 
 	return {
 		queryKey,
@@ -265,11 +201,11 @@ export const getGetCartItemByIdQueryOptions = <
 export type GetCartItemByIdQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getCartItemById>>
 >
-export type GetCartItemByIdQueryError = unknown
+export type GetCartItemByIdQueryError = ErrorType<unknown>
 
 export function useGetCartItemById<
 	TData = Awaited<ReturnType<typeof getCartItemById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetCartItemByIdPathParameters,
 	options: {
@@ -288,7 +224,7 @@ export function useGetCartItemById<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -296,7 +232,7 @@ export function useGetCartItemById<
 }
 export function useGetCartItemById<
 	TData = Awaited<ReturnType<typeof getCartItemById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetCartItemByIdPathParameters,
 	options?: {
@@ -315,7 +251,7 @@ export function useGetCartItemById<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -323,7 +259,7 @@ export function useGetCartItemById<
 }
 export function useGetCartItemById<
 	TData = Awaited<ReturnType<typeof getCartItemById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetCartItemByIdPathParameters,
 	options?: {
@@ -334,7 +270,7 @@ export function useGetCartItemById<
 				TData
 			>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -342,7 +278,7 @@ export function useGetCartItemById<
 }
 export function useGetCartItemById<
 	TData = Awaited<ReturnType<typeof getCartItemById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetCartItemByIdPathParameters,
 	options?: {
@@ -353,7 +289,7 @@ export function useGetCartItemById<
 				TData
 			>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -369,71 +305,28 @@ export function useGetCartItemById<
 	return withQueryKey(query, queryOptions.queryKey)
 }
 
-export type updateCartItemResponse200 = {
-	data: CartItemDto
-	status: 200
-}
-
-export type updateCartItemResponseSuccess = updateCartItemResponse200 & {
-	headers: Headers
-}
-
-export type updateCartItemResponse = updateCartItemResponseSuccess
-
-export const getUpdateCartItemUrl = ({ id }: UpdateCartItemPathParameters) => {
-	return `/cart-items/${id}`
-}
-
-export const updateCartItem = async (
+export const updateCartItem = (
 	{ id }: UpdateCartItemPathParameters,
 	updateCartItemDto: UpdateCartItemDto,
-	options?: RequestInit,
-): Promise<updateCartItemResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {}
-		if (h instanceof Headers) return Object.fromEntries(h.entries())
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			)
-		}
-		const headers: Record<string, string | readonly string[]> = {}
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value
-		}
-		return headers
-	}
-	const res = await fetch(getUpdateCartItemUrl({ id }), {
-		...options,
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<CartItemDto>(
+		{
+			url: `/cart-items/${id}`,
+			method: "PATCH",
+			headers: { "Content-Type": "application/json" },
+			data: updateCartItemDto,
+			signal,
 		},
-		body: JSON.stringify(updateCartItemDto),
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: updateCartItemResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as updateCartItemResponse
+		options,
+	)
 }
 
 export const getUpdateCartItemMutationKey = () => ["updateCartItem"] as const
 
 export const getUpdateCartItemMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -442,7 +335,7 @@ export const getUpdateCartItemMutationOptions = <
 		UpdateCartItemMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof updateCartItem>>,
 	TError,
@@ -450,13 +343,13 @@ export const getUpdateCartItemMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getUpdateCartItemMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof updateCartItem>>,
@@ -464,7 +357,7 @@ export const getUpdateCartItemMutationOptions = <
 	> = (props) => {
 		const { pathParams, data } = props ?? {}
 
-		return updateCartItem(pathParams, data, fetchOptions)
+		return updateCartItem(pathParams, data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -474,13 +367,16 @@ export type UpdateCartItemMutationResult = NonNullable<
 	Awaited<ReturnType<typeof updateCartItem>>
 >
 export type UpdateCartItemMutationBody = UpdateCartItemDto
-export type UpdateCartItemMutationError = unknown
+export type UpdateCartItemMutationError = ErrorType<unknown>
 export type UpdateCartItemMutationVariables = {
 	pathParams: UpdateCartItemPathParameters
 	data: UpdateCartItemDto
 }
 
-export const useUpdateCartItem = <TError = unknown, TContext = unknown>(
+export const useUpdateCartItem = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof updateCartItem>>,
@@ -488,7 +384,7 @@ export const useUpdateCartItem = <TError = unknown, TContext = unknown>(
 			UpdateCartItemMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
@@ -499,44 +395,21 @@ export const useUpdateCartItem = <TError = unknown, TContext = unknown>(
 > => {
 	return useMutation(getUpdateCartItemMutationOptions(options), queryClient)
 }
-export type deleteCartItemResponse200 = {
-	data: CartItemDto
-	status: 200
-}
-
-export type deleteCartItemResponseSuccess = deleteCartItemResponse200 & {
-	headers: Headers
-}
-
-export type deleteCartItemResponse = deleteCartItemResponseSuccess
-
-export const getDeleteCartItemUrl = ({ id }: DeleteCartItemPathParameters) => {
-	return `/cart-items/${id}`
-}
-
-export const deleteCartItem = async (
+export const deleteCartItem = (
 	{ id }: DeleteCartItemPathParameters,
-	options?: RequestInit,
-): Promise<deleteCartItemResponse> => {
-	const res = await fetch(getDeleteCartItemUrl({ id }), {
-		...options,
-		method: "DELETE",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: deleteCartItemResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as deleteCartItemResponse
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<CartItemDto>(
+		{ url: `/cart-items/${id}`, method: "DELETE", signal },
+		options,
+	)
 }
 
 export const getDeleteCartItemMutationKey = () => ["deleteCartItem"] as const
 
 export const getDeleteCartItemMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -545,7 +418,7 @@ export const getDeleteCartItemMutationOptions = <
 		DeleteCartItemMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof deleteCartItem>>,
 	TError,
@@ -553,13 +426,13 @@ export const getDeleteCartItemMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getDeleteCartItemMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof deleteCartItem>>,
@@ -567,7 +440,7 @@ export const getDeleteCartItemMutationOptions = <
 	> = (props) => {
 		const { pathParams } = props ?? {}
 
-		return deleteCartItem(pathParams, fetchOptions)
+		return deleteCartItem(pathParams, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -577,12 +450,15 @@ export type DeleteCartItemMutationResult = NonNullable<
 	Awaited<ReturnType<typeof deleteCartItem>>
 >
 
-export type DeleteCartItemMutationError = unknown
+export type DeleteCartItemMutationError = ErrorType<unknown>
 export type DeleteCartItemMutationVariables = {
 	pathParams: DeleteCartItemPathParameters
 }
 
-export const useDeleteCartItem = <TError = unknown, TContext = unknown>(
+export const useDeleteCartItem = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof deleteCartItem>>,
@@ -590,7 +466,7 @@ export const useDeleteCartItem = <TError = unknown, TContext = unknown>(
 			DeleteCartItemMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
