@@ -14,6 +14,8 @@ import type {
 import { HttpResponse, http } from "msw"
 
 import type {
+	CartItemDto,
+	CreateCartItemDto,
 	CreateImageDto,
 	CreateOrderItemDto,
 	CreateProductDto,
@@ -24,6 +26,7 @@ import type {
 	OrderItemDto,
 	ProductDto,
 	ProductDtoWithVariant,
+	UpdateCartItemDto,
 	UpdateOrderDto,
 	UpdateOrderItemDto,
 	UpdateProductDto,
@@ -63,6 +66,7 @@ export const getGetUserOrdersResponseMock = (): OrderDto[] =>
 			status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 			createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+			quantity: faker.number.float({ fractionDigits: 2 }),
 			variant: {
 				id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 				name: (() =>
@@ -332,6 +336,7 @@ export const getCreateOrderResponseMock = (
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		quantity: faker.number.float({ fractionDigits: 2 }),
 		variant: {
 			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 			name: (() =>
@@ -378,6 +383,7 @@ export const getGetOrderByIdResponseMock = (
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		quantity: faker.number.float({ fractionDigits: 2 }),
 		variant: {
 			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 			name: (() =>
@@ -424,6 +430,7 @@ export const getUpdateOrderResponseMock = (
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		quantity: faker.number.float({ fractionDigits: 2 }),
 		variant: {
 			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 			name: (() =>
@@ -470,6 +477,7 @@ export const getDeleteOrderResponseMock = (
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 		createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+		quantity: faker.number.float({ fractionDigits: 2 }),
 		variant: {
 			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 			name: (() =>
@@ -506,6 +514,7 @@ export const getCreateOrderItemResponseMock = (
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
 	variant: {
 		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 		name: (() =>
@@ -541,6 +550,7 @@ export const getGetOrderItemByIdResponseMock = (
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
 	variant: {
 		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 		name: (() =>
@@ -576,6 +586,7 @@ export const getUpdateOrderItemResponseMock = (
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
 	variant: {
 		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 		name: (() =>
@@ -611,6 +622,143 @@ export const getDeleteOrderItemResponseMock = (
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
 	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
+	variant: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
+	},
+	...overrideResponse,
+})
+
+export const getCreateOrderItem2ResponseMock = (
+	overrideResponse: Partial<Extract<CartItemDto, object>> = {},
+): CartItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
+	variant: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
+	},
+	...overrideResponse,
+})
+
+export const getGetCartItemByIdResponseMock = (
+	overrideResponse: Partial<Extract<CartItemDto, object>> = {},
+): CartItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
+	variant: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
+	},
+	...overrideResponse,
+})
+
+export const getUpdateCartItemResponseMock = (
+	overrideResponse: Partial<Extract<CartItemDto, object>> = {},
+): CartItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
+	variant: {
+		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		name: (() =>
+			`${faker.helpers.arrayElement(["שחור", "חאקי", "ירוק זית"])} / ${faker.number.int({ min: 38, max: 50 })}`)(),
+		createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+		description: (() => faker.commerce.productDescription())(),
+		sku: (() => faker.string.alphanumeric({ length: 8, casing: "upper" }))(),
+		isPrivate: faker.datatype.boolean(),
+		product: {
+			id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			name: (() => faker.commerce.productName())(),
+			createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+			description: (() => faker.commerce.productDescription())(),
+			images: Array.from(
+				{ length: faker.number.int({ min: 1, max: 10 }) },
+				(_, i) => i + 1,
+			).map(() => ({
+				name: (() => faker.system.commonFileName("jpg"))(),
+				url: (() => faker.image.url({ width: 100, height: 100 }))(),
+			})),
+		},
+	},
+	...overrideResponse,
+})
+
+export const getDeleteCartItemResponseMock = (
+	overrideResponse: Partial<Extract<CartItemDto, object>> = {},
+): CartItemDto => ({
+	id: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	createdBy: (() => faker.number.int({ min: 1, max: 10000 }))(),
+	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	deletedAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	createdAt: faker.date.past().toISOString().slice(0, 19) + "Z",
+	quantity: faker.number.float({ fractionDigits: 2 }),
 	variant: {
 		id: (() => faker.number.int({ min: 1, max: 10000 }))(),
 		name: (() =>
@@ -1197,6 +1345,120 @@ export const getDeleteOrderItemMockHandler = (
 		options,
 	)
 }
+
+export const getCreateOrderItem2MockHandler = (
+	overrideResponse?:
+		| CartItemDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<
+						{ userId: string; variantId: string },
+						CreateCartItemDto
+					>
+				>[0],
+		  ) => Promise<CartItemDto> | CartItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.post<{ userId: string; variantId: string }, CreateCartItemDto>(
+		"http://localhost:3000/cart-items/:userId/:variantId",
+		async (
+			info: Parameters<
+				HttpResponseResolver<
+					{ userId: string; variantId: string },
+					CreateCartItemDto
+				>
+			>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getCreateOrderItem2ResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getGetCartItemByIdMockHandler = (
+	overrideResponse?:
+		| CartItemDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<CartItemDto> | CartItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get<{ id: string }>(
+		"http://localhost:3000/cart-items/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetCartItemByIdResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getUpdateCartItemMockHandler = (
+	overrideResponse?:
+		| CartItemDto
+		| ((
+				info: Parameters<
+					HttpResponseResolver<{ id: string }, UpdateCartItemDto>
+				>[0],
+		  ) => Promise<CartItemDto> | CartItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.patch<{ id: string }, UpdateCartItemDto>(
+		"http://localhost:3000/cart-items/:id",
+		async (
+			info: Parameters<
+				HttpResponseResolver<{ id: string }, UpdateCartItemDto>
+			>[0],
+		) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getUpdateCartItemResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
+
+export const getDeleteCartItemMockHandler = (
+	overrideResponse?:
+		| CartItemDto
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<CartItemDto> | CartItemDto),
+	options?: RequestHandlerOptions,
+) => {
+	return http.delete<{ id: string }>(
+		"http://localhost:3000/cart-items/:id",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getDeleteCartItemResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
 export const getLogiSawggerMock = () => [
 	getAppControllerGetRootMockHandler(),
 	getCreateUserMockHandler(),
@@ -1219,4 +1481,8 @@ export const getLogiSawggerMock = () => [
 	getGetOrderItemByIdMockHandler(),
 	getUpdateOrderItemMockHandler(),
 	getDeleteOrderItemMockHandler(),
+	getCreateOrderItem2MockHandler(),
+	getGetCartItemByIdMockHandler(),
+	getUpdateCartItemMockHandler(),
+	getDeleteCartItemMockHandler(),
 ]

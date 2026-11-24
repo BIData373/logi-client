@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from "./cartItemDto.ts"
+export * from "./createCartItemDto.ts"
 export * from "./createImageDto.ts"
 export * from "./createOrderItemDto.ts"
 export * from "./createProductDto.ts"
@@ -16,6 +18,7 @@ export * from "./orderDto.ts"
 export * from "./orderItemDto.ts"
 export * from "./productDto.ts"
 export * from "./productDtoWithVariant.ts"
+export * from "./updateCartItemDto.ts"
 export * from "./updateOrderDto.ts"
 export * from "./updateOrderItemDto.ts"
 export * from "./updateProductDto.ts"

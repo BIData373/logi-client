@@ -23,6 +23,8 @@ import type {
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 import type {
+	CartItemDto,
+	CreateCartItemDto,
 	CreateImageDto,
 	CreateOrderItemDto,
 	CreateProductDto,
@@ -33,6 +35,7 @@ import type {
 	OrderItemDto,
 	ProductDto,
 	ProductDtoWithVariant,
+	UpdateCartItemDto,
 	UpdateOrderDto,
 	UpdateOrderItemDto,
 	UpdateProductDto,
@@ -2888,4 +2891,551 @@ export const useDeleteOrderItem = <TError = unknown, TContext = unknown>(
 	TContext
 > => {
 	return useMutation(getDeleteOrderItemMutationOptions(options), queryClient)
+}
+
+export type createOrderItem2Response200 = {
+	data: CartItemDto
+	status: 200
+}
+
+export type createOrderItem2ResponseSuccess = createOrderItem2Response200 & {
+	headers: Headers
+}
+
+export type createOrderItem2Response = createOrderItem2ResponseSuccess
+
+export const getCreateOrderItem2Url = (userId: number, variantId: number) => {
+	return `http://localhost:3000/cart-items/${userId}/${variantId}`
+}
+
+export const createOrderItem2 = async (
+	userId: number,
+	variantId: number,
+	createCartItemDto: CreateCartItemDto,
+	options?: RequestInit,
+): Promise<createOrderItem2Response> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
+	const res = await fetch(getCreateOrderItem2Url(userId, variantId), {
+		...options,
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
+		body: JSON.stringify(createCartItemDto),
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: createOrderItem2Response["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as createOrderItem2Response
+}
+
+export const getCreateOrderItem2MutationKey = () =>
+	["createOrderItem2"] as const
+
+export const getCreateOrderItem2MutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof createOrderItem2>>,
+		TError,
+		CreateOrderItem2MutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof createOrderItem2>>,
+	TError,
+	CreateOrderItem2MutationVariables,
+	TContext
+> => {
+	const mutationKey = getCreateOrderItem2MutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof createOrderItem2>>,
+		CreateOrderItem2MutationVariables
+	> = (props) => {
+		const { userId, variantId, data } = props ?? {}
+
+		return createOrderItem2(userId, variantId, data, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type CreateOrderItem2MutationResult = NonNullable<
+	Awaited<ReturnType<typeof createOrderItem2>>
+>
+export type CreateOrderItem2MutationBody = CreateCartItemDto
+export type CreateOrderItem2MutationError = unknown
+export type CreateOrderItem2MutationVariables = {
+	userId: number
+	variantId: number
+	data: CreateCartItemDto
+}
+
+export const useCreateOrderItem2 = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof createOrderItem2>>,
+			TError,
+			CreateOrderItem2MutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof createOrderItem2>>,
+	TError,
+	CreateOrderItem2MutationVariables,
+	TContext
+> => {
+	return useMutation(getCreateOrderItem2MutationOptions(options), queryClient)
+}
+
+export type getCartItemByIdResponse200 = {
+	data: CartItemDto
+	status: 200
+}
+
+export type getCartItemByIdResponseSuccess = getCartItemByIdResponse200 & {
+	headers: Headers
+}
+
+export type getCartItemByIdResponse = getCartItemByIdResponseSuccess
+
+export const getGetCartItemByIdUrl = (id: number) => {
+	return `http://localhost:3000/cart-items/${id}`
+}
+
+export const getCartItemById = async (
+	id: number,
+	options?: RequestInit,
+): Promise<getCartItemByIdResponse> => {
+	const res = await fetch(getGetCartItemByIdUrl(id), {
+		...options,
+		method: "GET",
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: getCartItemByIdResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as getCartItemByIdResponse
+}
+
+export const getGetCartItemByIdQueryKey = (id: number) => {
+	return [`http://localhost:3000/cart-items/${id}`] as const
+}
+
+export const getGetCartItemByIdQueryOptions = <
+	TData = Awaited<ReturnType<typeof getCartItemById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getCartItemById>>,
+				TError,
+				TData
+			>
+		>
+		fetch?: RequestInit
+	},
+) => {
+	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+
+	const queryKey = queryOptions?.queryKey ?? getGetCartItemByIdQueryKey(id)
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getCartItemById>>> = ({
+		signal,
+	}) => getCartItemById(id, { signal, ...fetchOptions })
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: id !== null && id !== undefined,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof getCartItemById>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetCartItemByIdQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getCartItemById>>
+>
+export type GetCartItemByIdQueryError = unknown
+
+export function useGetCartItemById<
+	TData = Awaited<ReturnType<typeof getCartItemById>>,
+	TError = unknown,
+>(
+	id: number,
+	options: {
+		query: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getCartItemById>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getCartItemById>>,
+					TError,
+					Awaited<ReturnType<typeof getCartItemById>>
+				>,
+				"initialData"
+			>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetCartItemById<
+	TData = Awaited<ReturnType<typeof getCartItemById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getCartItemById>>,
+				TError,
+				TData
+			>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getCartItemById>>,
+					TError,
+					Awaited<ReturnType<typeof getCartItemById>>
+				>,
+				"initialData"
+			>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetCartItemById<
+	TData = Awaited<ReturnType<typeof getCartItemById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getCartItemById>>,
+				TError,
+				TData
+			>
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetCartItemById<
+	TData = Awaited<ReturnType<typeof getCartItemById>>,
+	TError = unknown,
+>(
+	id: number,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<
+				Awaited<ReturnType<typeof getCartItemById>>,
+				TError,
+				TData
+			>
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+} {
+	const queryOptions = getGetCartItemByIdQueryOptions(id, options)
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+	return withQueryKey(query, queryOptions.queryKey)
+}
+
+export type updateCartItemResponse200 = {
+	data: CartItemDto
+	status: 200
+}
+
+export type updateCartItemResponseSuccess = updateCartItemResponse200 & {
+	headers: Headers
+}
+
+export type updateCartItemResponse = updateCartItemResponseSuccess
+
+export const getUpdateCartItemUrl = (id: number) => {
+	return `http://localhost:3000/cart-items/${id}`
+}
+
+export const updateCartItem = async (
+	id: number,
+	updateCartItemDto: UpdateCartItemDto,
+	options?: RequestInit,
+): Promise<updateCartItemResponse> => {
+	const getHeaders = (
+		h?: NonNullable<RequestInit["headers"]>,
+	): Record<string, string | readonly string[]> => {
+		if (!h) return {}
+		if (h instanceof Headers) return Object.fromEntries(h.entries())
+		if (Symbol.iterator in h) {
+			return Object.fromEntries(
+				Array.from(
+					h as Iterable<Iterable<string>>,
+					(entry) => Array.from(entry) as [string, string],
+				),
+			)
+		}
+		const headers: Record<string, string | readonly string[]> = {}
+		for (const [name, value] of Object.entries<
+			string | readonly string[] | undefined
+		>(h)) {
+			if (value !== undefined) headers[name] = value
+		}
+		return headers
+	}
+	const res = await fetch(getUpdateCartItemUrl(id), {
+		...options,
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			...getHeaders(options?.headers),
+		},
+		body: JSON.stringify(updateCartItemDto),
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: updateCartItemResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as updateCartItemResponse
+}
+
+export const getUpdateCartItemMutationKey = () => ["updateCartItem"] as const
+
+export const getUpdateCartItemMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof updateCartItem>>,
+		TError,
+		UpdateCartItemMutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof updateCartItem>>,
+	TError,
+	UpdateCartItemMutationVariables,
+	TContext
+> => {
+	const mutationKey = getUpdateCartItemMutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof updateCartItem>>,
+		UpdateCartItemMutationVariables
+	> = (props) => {
+		const { id, data } = props ?? {}
+
+		return updateCartItem(id, data, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type UpdateCartItemMutationResult = NonNullable<
+	Awaited<ReturnType<typeof updateCartItem>>
+>
+export type UpdateCartItemMutationBody = UpdateCartItemDto
+export type UpdateCartItemMutationError = unknown
+export type UpdateCartItemMutationVariables = {
+	id: number
+	data: UpdateCartItemDto
+}
+
+export const useUpdateCartItem = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof updateCartItem>>,
+			TError,
+			UpdateCartItemMutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof updateCartItem>>,
+	TError,
+	UpdateCartItemMutationVariables,
+	TContext
+> => {
+	return useMutation(getUpdateCartItemMutationOptions(options), queryClient)
+}
+
+export type deleteCartItemResponse200 = {
+	data: CartItemDto
+	status: 200
+}
+
+export type deleteCartItemResponseSuccess = deleteCartItemResponse200 & {
+	headers: Headers
+}
+
+export type deleteCartItemResponse = deleteCartItemResponseSuccess
+
+export const getDeleteCartItemUrl = (id: number) => {
+	return `http://localhost:3000/cart-items/${id}`
+}
+
+export const deleteCartItem = async (
+	id: number,
+	options?: RequestInit,
+): Promise<deleteCartItemResponse> => {
+	const res = await fetch(getDeleteCartItemUrl(id), {
+		...options,
+		method: "DELETE",
+	})
+
+	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+
+	const data: deleteCartItemResponse["data"] = body ? JSON.parse(body) : {}
+	return {
+		data,
+		status: res.status,
+		headers: res.headers,
+	} as deleteCartItemResponse
+}
+
+export const getDeleteCartItemMutationKey = () => ["deleteCartItem"] as const
+
+export const getDeleteCartItemMutationOptions = <
+	TError = unknown,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof deleteCartItem>>,
+		TError,
+		DeleteCartItemMutationVariables,
+		TContext
+	>
+	fetch?: RequestInit
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof deleteCartItem>>,
+	TError,
+	DeleteCartItemMutationVariables,
+	TContext
+> => {
+	const mutationKey = getDeleteCartItemMutationKey()
+	const { mutation: mutationOptions, fetch: fetchOptions } = options
+		? options.mutation &&
+			"mutationKey" in options.mutation &&
+			options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, fetch: undefined }
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof deleteCartItem>>,
+		DeleteCartItemMutationVariables
+	> = (props) => {
+		const { id } = props ?? {}
+
+		return deleteCartItem(id, fetchOptions)
+	}
+
+	return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteCartItemMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteCartItem>>
+>
+
+export type DeleteCartItemMutationError = unknown
+export type DeleteCartItemMutationVariables = { id: number }
+
+export const useDeleteCartItem = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof deleteCartItem>>,
+			TError,
+			DeleteCartItemMutationVariables,
+			TContext
+		>
+		fetch?: RequestInit
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof deleteCartItem>>,
+	TError,
+	DeleteCartItemMutationVariables,
+	TContext
+> => {
+	return useMutation(getDeleteCartItemMutationOptions(options), queryClient)
 }

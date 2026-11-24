@@ -15,5 +15,6 @@ export interface OrderItemDto {
 	status: string
 	deletedAt: string
 	createdAt: string
+	quantity: number
 	variant: VariantDto
 }
