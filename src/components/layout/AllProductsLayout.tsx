@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { useState } from "react"
-import { useGetAllProducts } from "#/api/logiSawgger"
+import { useGetAllProducts } from "#/api"
 import { useFuse } from "#/hooks/useFuse"
 import { CategoryChip } from "../logi/CategoryChip"
 import { ProductCard } from "../logi/ProductCard"
@@ -47,7 +47,7 @@ export default function AllProductsLayout() {
 		navigate({
 			to: `/products/$productId`,
 			params: {
-				productId: productId.toString(),
+				productId,
 			},
 		})
 	}
