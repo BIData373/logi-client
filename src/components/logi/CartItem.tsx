@@ -1,14 +1,14 @@
 import { cn } from "cn"
 import { Repeat, Trash2 } from "lucide-react"
+import type { CartItemDto } from "#/api/model"
 import { Button } from "#/components/ui/button"
 import { Card } from "#/components/ui/card"
 import { Separator } from "#/components/ui/separator"
-import { OrderLineItem, type OrderLineItemProps } from "./OrderLineItem"
+import { OrderLineItem } from "./OrderLineItem"
 import { QuantityStepper } from "./QuantityStepper"
 
 interface CartItemProps {
-	item: Omit<OrderLineItemProps, "quantity">
-	quantity?: number
+	cartItem: CartItemDto
 	onVariantChange?: (label: string, value: string) => void
 	onQuantityChange?: (quantity: number) => void
 	onRemove?: () => void
@@ -17,8 +17,7 @@ interface CartItemProps {
 }
 
 export function CartItem({
-	item,
-	quantity = 1,
+	cartItem,
 	onQuantityChange,
 	onRemove,
 	onReplaceVariant,
@@ -26,7 +25,7 @@ export function CartItem({
 }: CartItemProps) {
 	return (
 		<Card className={cn(className)}>
-			<OrderLineItem {...item} />
+			<OrderLineItem variant={cartItem.variant} />
 			<Separator />
 			<div className="flex items-center justify-between p-4">
 				<div className="flex items-center gap-2">
@@ -40,7 +39,7 @@ export function CartItem({
 					</Button>
 				</div>
 				<QuantityStepper
-					defaultValue={quantity}
+					defaultValue={cartItem.quantity}
 					onValueChange={onQuantityChange}
 				/>
 			</div>
