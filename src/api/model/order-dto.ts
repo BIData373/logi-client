@@ -5,14 +5,14 @@
  * The cats API description
  * OpenAPI spec version: 1.0
  */
-import type { OrderItemDto } from "./orderItemDto.ts"
+import type { OrderItemDto } from "./order-item-dto.ts"
 
 export interface OrderDto {
 	id: number
 	createdBy: number
-	estimatedDate: string
+	estimatedDate: Date
 	status: string
-	createdAt: string
-	deletedAt: string
+	createdAt: Date
+	deletedAt: Date
 	orderItems: OrderItemDto[]
 }

@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface UpdateOrderDto {
-	status?: string
-	estimatedDate?: string
+export type UpdateVariantPathParameters = {
+	id: number
 }

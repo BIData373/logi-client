@@ -5,14 +5,14 @@
  * The cats API description
  * OpenAPI spec version: 1.0
  */
-import type { ProductDto } from "./productDto.ts"
+import type { ImageDto } from "./image-dto.ts"
+import type { VariantDto } from "./variant-dto.ts"
 
-export interface VariantDto {
+export interface ProductDtoWithVariant {
 	id: number
 	name: string
 	createdBy: number
 	description: string
-	sku: string
-	isPrivate: boolean
-	product: ProductDto
+	images: ImageDto[]
+	variants: VariantDto[]
 }

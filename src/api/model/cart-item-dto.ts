@@ -5,14 +5,14 @@
  * The cats API description
  * OpenAPI spec version: 1.0
  */
-import type { VariantDto } from "./variantDto.ts"
+import type { VariantDto } from "./variant-dto.ts"
 
 export interface CartItemDto {
 	id: number
 	createdBy: number
 	status: string
-	deletedAt: string
-	createdAt: string
+	deletedAt: Date
+	createdAt: Date
 	quantity: number
 	variant: VariantDto
 }
