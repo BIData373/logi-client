@@ -36,9 +36,8 @@ export default function AllProductsLayout() {
 	const [activeCategory, setActiveCategory] = useState<string | null>(null)
 	const [query, setQuery] = useState("")
 
-	const { data } = useGetAllProducts()
-	const products = data?.data ?? []
-	const filteredProducts = useFuse(products, query, {
+	const { data: allProducts = [] } = useGetAllProducts()
+	const filteredProducts = useFuse(allProducts, query, {
 		keys: ["name"],
 		threshold: 0.3,
 	})
