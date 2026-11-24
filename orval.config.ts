@@ -4,6 +4,7 @@ import { defineConfig } from "orval"
 config()
 
 const API_URL = process.env.VITE_API_BASE_URL ?? "http://localhost:3000"
+const API_PREFIX = process.env.VITE_API_PREFIX ?? ""
 
 export default defineConfig({
 	logi: {
@@ -11,9 +12,12 @@ export default defineConfig({
 			mode: "tags-split",
 			target: "src/api/",
 			client: "react-query",
+			httpClient: "axios",
 			mock: {
 				indexMockFiles: true,
-				generators: [{ type: "msw" }],
+				generators: [
+					{ type: "msw", baseUrl: new URL(API_PREFIX, API_URL).toString() },
+				],
 			},
 			namingConvention: "kebab-case",
 			formatter: "biome",
@@ -28,6 +32,10 @@ export default defineConfig({
 				useDeprecatedOperations: false,
 				useNamedParameters: true,
 				preserveReadonlyRequestBodies: "strip",
+				mutator: {
+					path: "src/axios.ts",
+					name: "sendRequest",
+				},
 				formData: {
 					path: "src/form-data.ts",
 					name: "serializeFormData",
