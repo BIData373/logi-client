@@ -21,7 +21,9 @@ import type {
 	UseQueryResult,
 } from "@tanstack/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import type { ErrorType } from "../../axios.ts"
 
+import { sendRequest } from "../../axios.ts"
 import type {
 	CartItemDto,
 	CreateUserDto,
@@ -30,6 +32,8 @@ import type {
 	OrderDto,
 	UserDto,
 } from "../model"
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 const withQueryKey = <T extends object, K>(
 	query: T,
@@ -49,70 +53,27 @@ const withQueryKey = <T extends object, K>(
 	return result
 }
 
-export type createUserResponse200 = {
-	data: UserDto
-	status: 200
-}
-
-export type createUserResponseSuccess = createUserResponse200 & {
-	headers: Headers
-}
-
-export type createUserResponse = createUserResponseSuccess
-
-export const getCreateUserUrl = () => {
-	return `/users`
-}
-
-export const createUser = async (
+export const createUser = (
 	createUserDto: CreateUserDto,
-	options?: RequestInit,
-): Promise<createUserResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {}
-		if (h instanceof Headers) return Object.fromEntries(h.entries())
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			)
-		}
-		const headers: Record<string, string | readonly string[]> = {}
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value
-		}
-		return headers
-	}
-	const res = await fetch(getCreateUserUrl(), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<UserDto>(
+		{
+			url: `/users`,
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			data: createUserDto,
+			signal,
 		},
-		body: JSON.stringify(createUserDto),
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: createUserResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createUserResponse
+		options,
+	)
 }
 
 export const getCreateUserMutationKey = () => ["createUser"] as const
 
 export const getCreateUserMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -121,7 +82,7 @@ export const getCreateUserMutationOptions = <
 		CreateUserMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof createUser>>,
 	TError,
@@ -129,13 +90,13 @@ export const getCreateUserMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getCreateUserMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof createUser>>,
@@ -143,7 +104,7 @@ export const getCreateUserMutationOptions = <
 	> = (props) => {
 		const { data } = props ?? {}
 
-		return createUser(data, fetchOptions)
+		return createUser(data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -153,10 +114,10 @@ export type CreateUserMutationResult = NonNullable<
 	Awaited<ReturnType<typeof createUser>>
 >
 export type CreateUserMutationBody = CreateUserDto
-export type CreateUserMutationError = unknown
+export type CreateUserMutationError = ErrorType<unknown>
 export type CreateUserMutationVariables = { data: CreateUserDto }
 
-export const useCreateUser = <TError = unknown, TContext = unknown>(
+export const useCreateUser = <TError = ErrorType<unknown>, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof createUser>>,
@@ -164,7 +125,7 @@ export const useCreateUser = <TError = unknown, TContext = unknown>(
 			CreateUserMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
@@ -175,38 +136,15 @@ export const useCreateUser = <TError = unknown, TContext = unknown>(
 > => {
 	return useMutation(getCreateUserMutationOptions(options), queryClient)
 }
-export type getUserOrdersResponse200 = {
-	data: OrderDto[]
-	status: 200
-}
-
-export type getUserOrdersResponseSuccess = getUserOrdersResponse200 & {
-	headers: Headers
-}
-
-export type getUserOrdersResponse = getUserOrdersResponseSuccess
-
-export const getGetUserOrdersUrl = ({ id }: GetUserOrdersPathParameters) => {
-	return `/users/${id}/orders`
-}
-
-export const getUserOrders = async (
+export const getUserOrders = (
 	{ id }: GetUserOrdersPathParameters,
-	options?: RequestInit,
-): Promise<getUserOrdersResponse> => {
-	const res = await fetch(getGetUserOrdersUrl({ id }), {
-		...options,
-		method: "GET",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: getUserOrdersResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getUserOrdersResponse
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<OrderDto[]>(
+		{ url: `/users/${id}/orders`, method: "GET", signal },
+		options,
+	)
 }
 
 export const getGetUserOrdersQueryKey = ({
@@ -217,23 +155,23 @@ export const getGetUserOrdersQueryKey = ({
 
 export const getGetUserOrdersQueryOptions = <
 	TData = Awaited<ReturnType<typeof getUserOrders>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetUserOrdersPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+	const { query: queryOptions, request: requestOptions } = options ?? {}
 
 	const queryKey = queryOptions?.queryKey ?? getGetUserOrdersQueryKey({ id })
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserOrders>>> = ({
 		signal,
-	}) => getUserOrders({ id }, { signal, ...fetchOptions })
+	}) => getUserOrders({ id }, requestOptions, signal)
 
 	return {
 		queryKey,
@@ -250,11 +188,11 @@ export const getGetUserOrdersQueryOptions = <
 export type GetUserOrdersQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getUserOrders>>
 >
-export type GetUserOrdersQueryError = unknown
+export type GetUserOrdersQueryError = ErrorType<unknown>
 
 export function useGetUserOrders<
 	TData = Awaited<ReturnType<typeof getUserOrders>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetUserOrdersPathParameters,
 	options: {
@@ -269,7 +207,7 @@ export function useGetUserOrders<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -277,7 +215,7 @@ export function useGetUserOrders<
 }
 export function useGetUserOrders<
 	TData = Awaited<ReturnType<typeof getUserOrders>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetUserOrdersPathParameters,
 	options?: {
@@ -292,7 +230,7 @@ export function useGetUserOrders<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -300,14 +238,14 @@ export function useGetUserOrders<
 }
 export function useGetUserOrders<
 	TData = Awaited<ReturnType<typeof getUserOrders>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetUserOrdersPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -315,14 +253,14 @@ export function useGetUserOrders<
 }
 export function useGetUserOrders<
 	TData = Awaited<ReturnType<typeof getUserOrders>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetUserOrdersPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getUserOrders>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -338,38 +276,15 @@ export function useGetUserOrders<
 	return withQueryKey(query, queryOptions.queryKey)
 }
 
-export type getUserCartResponse200 = {
-	data: CartItemDto[]
-	status: 200
-}
-
-export type getUserCartResponseSuccess = getUserCartResponse200 & {
-	headers: Headers
-}
-
-export type getUserCartResponse = getUserCartResponseSuccess
-
-export const getGetUserCartUrl = ({ id }: GetUserCartPathParameters) => {
-	return `/users/${id}/cart`
-}
-
-export const getUserCart = async (
+export const getUserCart = (
 	{ id }: GetUserCartPathParameters,
-	options?: RequestInit,
-): Promise<getUserCartResponse> => {
-	const res = await fetch(getGetUserCartUrl({ id }), {
-		...options,
-		method: "GET",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: getUserCartResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getUserCartResponse
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<CartItemDto[]>(
+		{ url: `/users/${id}/cart`, method: "GET", signal },
+		options,
+	)
 }
 
 export const getGetUserCartQueryKey = ({ id }: GetUserCartPathParameters) => {
@@ -378,23 +293,23 @@ export const getGetUserCartQueryKey = ({ id }: GetUserCartPathParameters) => {
 
 export const getGetUserCartQueryOptions = <
 	TData = Awaited<ReturnType<typeof getUserCart>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetUserCartPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+	const { query: queryOptions, request: requestOptions } = options ?? {}
 
 	const queryKey = queryOptions?.queryKey ?? getGetUserCartQueryKey({ id })
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserCart>>> = ({
 		signal,
-	}) => getUserCart({ id }, { signal, ...fetchOptions })
+	}) => getUserCart({ id }, requestOptions, signal)
 
 	return {
 		queryKey,
@@ -411,11 +326,11 @@ export const getGetUserCartQueryOptions = <
 export type GetUserCartQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getUserCart>>
 >
-export type GetUserCartQueryError = unknown
+export type GetUserCartQueryError = ErrorType<unknown>
 
 export function useGetUserCart<
 	TData = Awaited<ReturnType<typeof getUserCart>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetUserCartPathParameters,
 	options: {
@@ -430,7 +345,7 @@ export function useGetUserCart<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -438,7 +353,7 @@ export function useGetUserCart<
 }
 export function useGetUserCart<
 	TData = Awaited<ReturnType<typeof getUserCart>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetUserCartPathParameters,
 	options?: {
@@ -453,7 +368,7 @@ export function useGetUserCart<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -461,14 +376,14 @@ export function useGetUserCart<
 }
 export function useGetUserCart<
 	TData = Awaited<ReturnType<typeof getUserCart>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetUserCartPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -476,14 +391,14 @@ export function useGetUserCart<
 }
 export function useGetUserCart<
 	TData = Awaited<ReturnType<typeof getUserCart>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetUserCartPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

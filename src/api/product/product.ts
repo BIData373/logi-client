@@ -21,7 +21,9 @@ import type {
 	UseQueryResult,
 } from "@tanstack/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import type { ErrorType } from "../../axios.ts"
 
+import { sendRequest } from "../../axios.ts"
 import type {
 	CreateProductDto,
 	CreateProductPathParameters,
@@ -32,6 +34,8 @@ import type {
 	UpdateProductDto,
 	UpdateProductPathParameters,
 } from "../model"
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 const withQueryKey = <T extends object, K>(
 	query: T,
@@ -51,73 +55,28 @@ const withQueryKey = <T extends object, K>(
 	return result
 }
 
-export type createProductResponse200 = {
-	data: ProductDto
-	status: 200
-}
-
-export type createProductResponseSuccess = createProductResponse200 & {
-	headers: Headers
-}
-
-export type createProductResponse = createProductResponseSuccess
-
-export const getCreateProductUrl = ({
-	userId,
-}: CreateProductPathParameters) => {
-	return `/products/${userId}`
-}
-
-export const createProduct = async (
+export const createProduct = (
 	{ userId }: CreateProductPathParameters,
 	createProductDto: CreateProductDto,
-	options?: RequestInit,
-): Promise<createProductResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {}
-		if (h instanceof Headers) return Object.fromEntries(h.entries())
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			)
-		}
-		const headers: Record<string, string | readonly string[]> = {}
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value
-		}
-		return headers
-	}
-	const res = await fetch(getCreateProductUrl({ userId }), {
-		...options,
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<ProductDto>(
+		{
+			url: `/products/${userId}`,
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			data: createProductDto,
+			signal,
 		},
-		body: JSON.stringify(createProductDto),
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: createProductResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as createProductResponse
+		options,
+	)
 }
 
 export const getCreateProductMutationKey = () => ["createProduct"] as const
 
 export const getCreateProductMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -126,7 +85,7 @@ export const getCreateProductMutationOptions = <
 		CreateProductMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof createProduct>>,
 	TError,
@@ -134,13 +93,13 @@ export const getCreateProductMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getCreateProductMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof createProduct>>,
@@ -148,7 +107,7 @@ export const getCreateProductMutationOptions = <
 	> = (props) => {
 		const { pathParams, data } = props ?? {}
 
-		return createProduct(pathParams, data, fetchOptions)
+		return createProduct(pathParams, data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -158,13 +117,16 @@ export type CreateProductMutationResult = NonNullable<
 	Awaited<ReturnType<typeof createProduct>>
 >
 export type CreateProductMutationBody = CreateProductDto
-export type CreateProductMutationError = unknown
+export type CreateProductMutationError = ErrorType<unknown>
 export type CreateProductMutationVariables = {
 	pathParams: CreateProductPathParameters
 	data: CreateProductDto
 }
 
-export const useCreateProduct = <TError = unknown, TContext = unknown>(
+export const useCreateProduct = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof createProduct>>,
@@ -172,7 +134,7 @@ export const useCreateProduct = <TError = unknown, TContext = unknown>(
 			CreateProductMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
@@ -183,37 +145,14 @@ export const useCreateProduct = <TError = unknown, TContext = unknown>(
 > => {
 	return useMutation(getCreateProductMutationOptions(options), queryClient)
 }
-export type getAllProductsResponse200 = {
-	data: ProductDto[]
-	status: 200
-}
-
-export type getAllProductsResponseSuccess = getAllProductsResponse200 & {
-	headers: Headers
-}
-
-export type getAllProductsResponse = getAllProductsResponseSuccess
-
-export const getGetAllProductsUrl = () => {
-	return `/products`
-}
-
-export const getAllProducts = async (
-	options?: RequestInit,
-): Promise<getAllProductsResponse> => {
-	const res = await fetch(getGetAllProductsUrl(), {
-		...options,
-		method: "GET",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: getAllProductsResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getAllProductsResponse
+export const getAllProducts = (
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<ProductDto[]>(
+		{ url: `/products`, method: "GET", signal },
+		options,
+	)
 }
 
 export const getGetAllProductsQueryKey = () => {
@@ -222,20 +161,20 @@ export const getGetAllProductsQueryKey = () => {
 
 export const getGetAllProductsQueryOptions = <
 	TData = Awaited<ReturnType<typeof getAllProducts>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(options?: {
 	query?: Partial<
 		UseQueryOptions<Awaited<ReturnType<typeof getAllProducts>>, TError, TData>
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+	const { query: queryOptions, request: requestOptions } = options ?? {}
 
 	const queryKey = queryOptions?.queryKey ?? getGetAllProductsQueryKey()
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getAllProducts>>> = ({
 		signal,
-	}) => getAllProducts({ signal, ...fetchOptions })
+	}) => getAllProducts(requestOptions, signal)
 
 	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
 		Awaited<ReturnType<typeof getAllProducts>>,
@@ -247,11 +186,11 @@ export const getGetAllProductsQueryOptions = <
 export type GetAllProductsQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getAllProducts>>
 >
-export type GetAllProductsQueryError = unknown
+export type GetAllProductsQueryError = ErrorType<unknown>
 
 export function useGetAllProducts<
 	TData = Awaited<ReturnType<typeof getAllProducts>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options: {
 		query: Partial<
@@ -265,7 +204,7 @@ export function useGetAllProducts<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -273,7 +212,7 @@ export function useGetAllProducts<
 }
 export function useGetAllProducts<
 	TData = Awaited<ReturnType<typeof getAllProducts>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options?: {
 		query?: Partial<
@@ -287,7 +226,7 @@ export function useGetAllProducts<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -295,13 +234,13 @@ export function useGetAllProducts<
 }
 export function useGetAllProducts<
 	TData = Awaited<ReturnType<typeof getAllProducts>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getAllProducts>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -309,13 +248,13 @@ export function useGetAllProducts<
 }
 export function useGetAllProducts<
 	TData = Awaited<ReturnType<typeof getAllProducts>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getAllProducts>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -331,38 +270,15 @@ export function useGetAllProducts<
 	return withQueryKey(query, queryOptions.queryKey)
 }
 
-export type getProductByIdResponse200 = {
-	data: ProductDtoWithVariant
-	status: 200
-}
-
-export type getProductByIdResponseSuccess = getProductByIdResponse200 & {
-	headers: Headers
-}
-
-export type getProductByIdResponse = getProductByIdResponseSuccess
-
-export const getGetProductByIdUrl = ({ id }: GetProductByIdPathParameters) => {
-	return `/products/${id}`
-}
-
-export const getProductById = async (
+export const getProductById = (
 	{ id }: GetProductByIdPathParameters,
-	options?: RequestInit,
-): Promise<getProductByIdResponse> => {
-	const res = await fetch(getGetProductByIdUrl({ id }), {
-		...options,
-		method: "GET",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: getProductByIdResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as getProductByIdResponse
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<ProductDtoWithVariant>(
+		{ url: `/products/${id}`, method: "GET", signal },
+		options,
+	)
 }
 
 export const getGetProductByIdQueryKey = ({
@@ -373,23 +289,23 @@ export const getGetProductByIdQueryKey = ({
 
 export const getGetProductByIdQueryOptions = <
 	TData = Awaited<ReturnType<typeof getProductById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetProductByIdPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getProductById>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 ) => {
-	const { query: queryOptions, fetch: fetchOptions } = options ?? {}
+	const { query: queryOptions, request: requestOptions } = options ?? {}
 
 	const queryKey = queryOptions?.queryKey ?? getGetProductByIdQueryKey({ id })
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getProductById>>> = ({
 		signal,
-	}) => getProductById({ id }, { signal, ...fetchOptions })
+	}) => getProductById({ id }, requestOptions, signal)
 
 	return {
 		queryKey,
@@ -406,11 +322,11 @@ export const getGetProductByIdQueryOptions = <
 export type GetProductByIdQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getProductById>>
 >
-export type GetProductByIdQueryError = unknown
+export type GetProductByIdQueryError = ErrorType<unknown>
 
 export function useGetProductById<
 	TData = Awaited<ReturnType<typeof getProductById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetProductByIdPathParameters,
 	options: {
@@ -425,7 +341,7 @@ export function useGetProductById<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -433,7 +349,7 @@ export function useGetProductById<
 }
 export function useGetProductById<
 	TData = Awaited<ReturnType<typeof getProductById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetProductByIdPathParameters,
 	options?: {
@@ -448,7 +364,7 @@ export function useGetProductById<
 				>,
 				"initialData"
 			>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -456,14 +372,14 @@ export function useGetProductById<
 }
 export function useGetProductById<
 	TData = Awaited<ReturnType<typeof getProductById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	pathParams: GetProductByIdPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getProductById>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -471,14 +387,14 @@ export function useGetProductById<
 }
 export function useGetProductById<
 	TData = Awaited<ReturnType<typeof getProductById>>,
-	TError = unknown,
+	TError = ErrorType<unknown>,
 >(
 	{ id }: GetProductByIdPathParameters,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getProductById>>, TError, TData>
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -494,71 +410,28 @@ export function useGetProductById<
 	return withQueryKey(query, queryOptions.queryKey)
 }
 
-export type updateProductResponse200 = {
-	data: ProductDto
-	status: 200
-}
-
-export type updateProductResponseSuccess = updateProductResponse200 & {
-	headers: Headers
-}
-
-export type updateProductResponse = updateProductResponseSuccess
-
-export const getUpdateProductUrl = ({ id }: UpdateProductPathParameters) => {
-	return `/products/${id}`
-}
-
-export const updateProduct = async (
+export const updateProduct = (
 	{ id }: UpdateProductPathParameters,
 	updateProductDto: UpdateProductDto,
-	options?: RequestInit,
-): Promise<updateProductResponse> => {
-	const getHeaders = (
-		h?: NonNullable<RequestInit["headers"]>,
-	): Record<string, string | readonly string[]> => {
-		if (!h) return {}
-		if (h instanceof Headers) return Object.fromEntries(h.entries())
-		if (Symbol.iterator in h) {
-			return Object.fromEntries(
-				Array.from(
-					h as Iterable<Iterable<string>>,
-					(entry) => Array.from(entry) as [string, string],
-				),
-			)
-		}
-		const headers: Record<string, string | readonly string[]> = {}
-		for (const [name, value] of Object.entries<
-			string | readonly string[] | undefined
-		>(h)) {
-			if (value !== undefined) headers[name] = value
-		}
-		return headers
-	}
-	const res = await fetch(getUpdateProductUrl({ id }), {
-		...options,
-		method: "PATCH",
-		headers: {
-			"Content-Type": "application/json",
-			...getHeaders(options?.headers),
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<ProductDto>(
+		{
+			url: `/products/${id}`,
+			method: "PATCH",
+			headers: { "Content-Type": "application/json" },
+			data: updateProductDto,
+			signal,
 		},
-		body: JSON.stringify(updateProductDto),
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: updateProductResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as updateProductResponse
+		options,
+	)
 }
 
 export const getUpdateProductMutationKey = () => ["updateProduct"] as const
 
 export const getUpdateProductMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -567,7 +440,7 @@ export const getUpdateProductMutationOptions = <
 		UpdateProductMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof updateProduct>>,
 	TError,
@@ -575,13 +448,13 @@ export const getUpdateProductMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getUpdateProductMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof updateProduct>>,
@@ -589,7 +462,7 @@ export const getUpdateProductMutationOptions = <
 	> = (props) => {
 		const { pathParams, data } = props ?? {}
 
-		return updateProduct(pathParams, data, fetchOptions)
+		return updateProduct(pathParams, data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -599,13 +472,16 @@ export type UpdateProductMutationResult = NonNullable<
 	Awaited<ReturnType<typeof updateProduct>>
 >
 export type UpdateProductMutationBody = UpdateProductDto
-export type UpdateProductMutationError = unknown
+export type UpdateProductMutationError = ErrorType<unknown>
 export type UpdateProductMutationVariables = {
 	pathParams: UpdateProductPathParameters
 	data: UpdateProductDto
 }
 
-export const useUpdateProduct = <TError = unknown, TContext = unknown>(
+export const useUpdateProduct = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof updateProduct>>,
@@ -613,7 +489,7 @@ export const useUpdateProduct = <TError = unknown, TContext = unknown>(
 			UpdateProductMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
@@ -624,44 +500,21 @@ export const useUpdateProduct = <TError = unknown, TContext = unknown>(
 > => {
 	return useMutation(getUpdateProductMutationOptions(options), queryClient)
 }
-export type deleteProductResponse200 = {
-	data: ProductDto
-	status: 200
-}
-
-export type deleteProductResponseSuccess = deleteProductResponse200 & {
-	headers: Headers
-}
-
-export type deleteProductResponse = deleteProductResponseSuccess
-
-export const getDeleteProductUrl = ({ id }: DeleteProductPathParameters) => {
-	return `/products/${id}`
-}
-
-export const deleteProduct = async (
+export const deleteProduct = (
 	{ id }: DeleteProductPathParameters,
-	options?: RequestInit,
-): Promise<deleteProductResponse> => {
-	const res = await fetch(getDeleteProductUrl({ id }), {
-		...options,
-		method: "DELETE",
-	})
-
-	const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-
-	const data: deleteProductResponse["data"] = body ? JSON.parse(body) : {}
-	return {
-		data,
-		status: res.status,
-		headers: res.headers,
-	} as deleteProductResponse
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<ProductDto>(
+		{ url: `/products/${id}`, method: "DELETE", signal },
+		options,
+	)
 }
 
 export const getDeleteProductMutationKey = () => ["deleteProduct"] as const
 
 export const getDeleteProductMutationOptions = <
-	TError = unknown,
+	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
@@ -670,7 +523,7 @@ export const getDeleteProductMutationOptions = <
 		DeleteProductMutationVariables,
 		TContext
 	>
-	fetch?: RequestInit
+	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof deleteProduct>>,
 	TError,
@@ -678,13 +531,13 @@ export const getDeleteProductMutationOptions = <
 	TContext
 > => {
 	const mutationKey = getDeleteProductMutationKey()
-	const { mutation: mutationOptions, fetch: fetchOptions } = options
+	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
 			options.mutation.mutationKey
 			? options
 			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, fetch: undefined }
+		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof deleteProduct>>,
@@ -692,7 +545,7 @@ export const getDeleteProductMutationOptions = <
 	> = (props) => {
 		const { pathParams } = props ?? {}
 
-		return deleteProduct(pathParams, fetchOptions)
+		return deleteProduct(pathParams, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -702,12 +555,15 @@ export type DeleteProductMutationResult = NonNullable<
 	Awaited<ReturnType<typeof deleteProduct>>
 >
 
-export type DeleteProductMutationError = unknown
+export type DeleteProductMutationError = ErrorType<unknown>
 export type DeleteProductMutationVariables = {
 	pathParams: DeleteProductPathParameters
 }
 
-export const useDeleteProduct = <TError = unknown, TContext = unknown>(
+export const useDeleteProduct = <
+	TError = ErrorType<unknown>,
+	TContext = unknown,
+>(
 	options?: {
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof deleteProduct>>,
@@ -715,7 +571,7 @@ export const useDeleteProduct = <TError = unknown, TContext = unknown>(
 			DeleteProductMutationVariables,
 			TContext
 		>
-		fetch?: RequestInit
+		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<

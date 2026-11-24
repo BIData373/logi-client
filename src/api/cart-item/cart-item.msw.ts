@@ -165,7 +165,7 @@ export const getCreateOrderItem2MockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string; variantId: string }, CreateCartItemDto>(
-		"*/cart-items/:userId/:variantId",
+		"http://localhost:3000/api/cart-items/:userId/:variantId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<
@@ -196,7 +196,7 @@ export const getGetCartItemByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"*/cart-items/:id",
+		"http://localhost:3000/api/cart-items/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -222,7 +222,7 @@ export const getUpdateCartItemMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateCartItemDto>(
-		"*/cart-items/:id",
+		"http://localhost:3000/api/cart-items/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateCartItemDto>
@@ -250,7 +250,7 @@ export const getDeleteCartItemMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"*/cart-items/:id",
+		"http://localhost:3000/api/cart-items/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

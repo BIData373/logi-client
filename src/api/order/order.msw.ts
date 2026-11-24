@@ -208,7 +208,7 @@ export const getCreateOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string }>(
-		"*/orders/:userId",
+		"http://localhost:3000/api/orders/:userId",
 		async (info: Parameters<HttpResponseResolver<{ userId: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -232,7 +232,7 @@ export const getGetOrderByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"*/orders/:id",
+		"http://localhost:3000/api/orders/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -258,7 +258,7 @@ export const getUpdateOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateOrderDto>(
-		"*/orders/:id",
+		"http://localhost:3000/api/orders/:id",
 		async (
 			info: Parameters<HttpResponseResolver<{ id: string }, UpdateOrderDto>>[0],
 		) => {
@@ -284,7 +284,7 @@ export const getDeleteOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"*/orders/:id",
+		"http://localhost:3000/api/orders/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
