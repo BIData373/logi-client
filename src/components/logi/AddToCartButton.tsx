@@ -2,7 +2,7 @@ import { ShoppingCartPlusIcon } from "lucide-react"
 import { Button } from "../ui/button"
 
 interface AddToCartButtonProps {
-	onClick?: () => void
+	onClick?(): void
 }
 
 export default function AddToCartButton({ onClick }: AddToCartButtonProps) {
