@@ -29,6 +29,7 @@ export const getCreateProductResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	...overrideResponse,
 })
@@ -48,6 +49,7 @@ export const getGetAllProductsResponseMock = (): ProductDto[] =>
 		).map(() => ({
 			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			id: faker.number.float({ fractionDigits: 2 }),
 		})),
 	}))
 
@@ -64,6 +66,7 @@ export const getGetProductByIdResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	variants: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
@@ -86,6 +89,7 @@ export const getGetProductByIdResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	})),
@@ -105,6 +109,7 @@ export const getUpdateProductResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	...overrideResponse,
 })
@@ -122,6 +127,7 @@ export const getDeleteProductResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	...overrideResponse,
 })

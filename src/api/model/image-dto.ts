@@ -9,4 +9,5 @@
 export interface ImageDto {
 	name: string
 	url: string
+	id: number
 }

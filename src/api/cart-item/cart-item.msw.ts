@@ -42,6 +42,7 @@ export const getCreateOrderItem2ResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -75,6 +76,7 @@ export const getGetCartItemByIdResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -108,6 +110,7 @@ export const getUpdateCartItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -141,6 +144,7 @@ export const getDeleteCartItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},

@@ -16,6 +16,7 @@ export const getCreateImageResponseMock = (
 ): ImageDto => ({
 	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	id: faker.number.float({ fractionDigits: 2 }),
 	...overrideResponse,
 })
 

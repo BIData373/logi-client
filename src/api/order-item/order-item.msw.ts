@@ -19,7 +19,7 @@ export const getCreateOrderItemResponseMock = (
 	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
 ): OrderItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
-	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	orderId: faker.number.float({ fractionDigits: 2 }),
 	createdBy: faker.number.float({ fractionDigits: 2 }),
 	estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -44,6 +44,7 @@ export const getCreateOrderItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -54,7 +55,7 @@ export const getGetOrderItemByIdResponseMock = (
 	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
 ): OrderItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
-	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	orderId: faker.number.float({ fractionDigits: 2 }),
 	createdBy: faker.number.float({ fractionDigits: 2 }),
 	estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -79,6 +80,7 @@ export const getGetOrderItemByIdResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -89,7 +91,7 @@ export const getUpdateOrderItemResponseMock = (
 	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
 ): OrderItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
-	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	orderId: faker.number.float({ fractionDigits: 2 }),
 	createdBy: faker.number.float({ fractionDigits: 2 }),
 	estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -114,6 +116,7 @@ export const getUpdateOrderItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -124,7 +127,7 @@ export const getDeleteOrderItemResponseMock = (
 	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
 ): OrderItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
-	orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	orderId: faker.number.float({ fractionDigits: 2 }),
 	createdBy: faker.number.float({ fractionDigits: 2 }),
 	estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 	status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -149,6 +152,7 @@ export const getDeleteOrderItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
