@@ -27,10 +27,7 @@ function AppLayout() {
 
 	function handleOpenCart() {
 		navigate({
-			to: `/cart/$cartId`,
-			params: {
-				cartId: "1",
-			},
+			to: `/cart`,
 		})
 	}
 
