@@ -47,10 +47,6 @@ export default function CartLayout() {
 				<InfoRow className="text-lg font-medium" icon={ShoppingBasket}>
 					סל קניות
 				</InfoRow>
-				<CartItem
-					cartItem={}
-					onReplaceVariant={() => handleGoToProduct(1)}
-				/>
 			</div>
 			<CheckoutBar
 				variant="summary"

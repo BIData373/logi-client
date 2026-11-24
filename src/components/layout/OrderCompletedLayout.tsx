@@ -1,17 +1,17 @@
 import { notFound, useNavigate, useParams } from "@tanstack/react-router"
 import { CheckCircle2, ThumbsUp, Ticket, User } from "lucide-react"
+import { useGetOrderById } from "#/api"
 import { Separator } from "#/components/ui/separator"
 import { InfoRow } from "../logi/InfoRow"
 import { OrderLineItem } from "../logi/OrderLineItem"
 import { Button } from "../ui/button"
 import { Card, CardTitle } from "../ui/card"
-import { useGetOrderById } from "#/api/logiSawgger"
 
 export default function OrderCompletedLayout() {
 	const navigate = useNavigate()
 
 	const { orderId } = useParams({ from: "/order-completed/$orderId" })
-	const { data, isPending } = useGetOrderById(orderId)
+	const { data, isPending } = useGetOrderById({ id: orderId })
 
 	if (isPending) {
 		return null
