@@ -1,16 +1,16 @@
 import { useNavigate } from "@tanstack/react-router"
 import { ShoppingBasket, ThumbsUp, User } from "lucide-react"
 import { useGetUserCart } from "#/api"
+import { CartItem } from "../logi/CartItem"
 import { CheckoutBar } from "../logi/CheckoutBar"
 import { Header } from "../logi/Header"
 import { InfoRow } from "../logi/InfoRow"
 import { Card } from "../ui/card"
 import { Separator } from "../ui/separator"
-import { CartItem } from "../logi/CartItem"
 
 export default function CartLayout() {
 	const navigate = useNavigate()
-	const { data: cartItems, isLoading } = useGetUserCart({ id: 1 })
+	const { data: cartItems = [], isLoading } = useGetUserCart({ id: 1 })
 
 	function handleGoToSummaryPage(orderId: number) {
 		navigate({
@@ -42,9 +42,11 @@ export default function CartLayout() {
 						סל קניות
 					</InfoRow>
 					<div className="flex flex-col gap-2">
-						{cartItems?.map((cartItem) => (
-							<CartItem cartItem={cartItem} key={cartItem.id} />
-						))}
+						{cartItems
+							.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+							.map((cartItem) => (
+								<CartItem cartItem={cartItem} key={cartItem.id} />
+							))}
 					</div>
 				</div>
 				<CheckoutBar
