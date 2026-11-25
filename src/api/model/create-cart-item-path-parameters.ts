@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export type CreateOrderItem2PathParameters = {
+export type CreateCartItemPathParameters = {
 	userId: number
 	variantId: number
 }

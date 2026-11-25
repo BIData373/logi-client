@@ -27,7 +27,7 @@ import { sendRequest } from "../../axios.ts"
 import type {
 	CartItemDto,
 	CreateCartItemDto,
-	CreateOrderItem2PathParameters,
+	CreateCartItemPathParameters,
 	DeleteCartItemPathParameters,
 	GetCartItemByIdPathParameters,
 	UpdateCartItemDto,
@@ -54,8 +54,8 @@ const withQueryKey = <T extends object, K>(
 	return result
 }
 
-export const createOrderItem2 = (
-	{ userId, variantId }: CreateOrderItem2PathParameters,
+export const createCartItem = (
+	{ userId, variantId }: CreateCartItemPathParameters,
 	createCartItemDto: CreateCartItemDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
@@ -72,27 +72,26 @@ export const createOrderItem2 = (
 	)
 }
 
-export const getCreateOrderItem2MutationKey = () =>
-	["createOrderItem2"] as const
+export const getCreateCartItemMutationKey = () => ["createCartItem"] as const
 
-export const getCreateOrderItem2MutationOptions = <
+export const getCreateCartItemMutationOptions = <
 	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(options?: {
 	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof createOrderItem2>>,
+		Awaited<ReturnType<typeof createCartItem>>,
 		TError,
-		CreateOrderItem2MutationVariables,
+		CreateCartItemMutationVariables,
 		TContext
 	>
 	request?: SecondParameter<typeof sendRequest>
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof createOrderItem2>>,
+	Awaited<ReturnType<typeof createCartItem>>,
 	TError,
-	CreateOrderItem2MutationVariables,
+	CreateCartItemMutationVariables,
 	TContext
 > => {
-	const mutationKey = getCreateOrderItem2MutationKey()
+	const mutationKey = getCreateCartItemMutationKey()
 	const { mutation: mutationOptions, request: requestOptions } = options
 		? options.mutation &&
 			"mutationKey" in options.mutation &&
@@ -102,48 +101,48 @@ export const getCreateOrderItem2MutationOptions = <
 		: { mutation: { mutationKey }, request: undefined }
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof createOrderItem2>>,
-		CreateOrderItem2MutationVariables
+		Awaited<ReturnType<typeof createCartItem>>,
+		CreateCartItemMutationVariables
 	> = (props) => {
 		const { pathParams, data } = props ?? {}
 
-		return createOrderItem2(pathParams, data, requestOptions)
+		return createCartItem(pathParams, data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
 }
 
-export type CreateOrderItem2MutationResult = NonNullable<
-	Awaited<ReturnType<typeof createOrderItem2>>
+export type CreateCartItemMutationResult = NonNullable<
+	Awaited<ReturnType<typeof createCartItem>>
 >
-export type CreateOrderItem2MutationBody = CreateCartItemDto
-export type CreateOrderItem2MutationError = ErrorType<unknown>
-export type CreateOrderItem2MutationVariables = {
-	pathParams: CreateOrderItem2PathParameters
+export type CreateCartItemMutationBody = CreateCartItemDto
+export type CreateCartItemMutationError = ErrorType<unknown>
+export type CreateCartItemMutationVariables = {
+	pathParams: CreateCartItemPathParameters
 	data: CreateCartItemDto
 }
 
-export const useCreateOrderItem2 = <
+export const useCreateCartItem = <
 	TError = ErrorType<unknown>,
 	TContext = unknown,
 >(
 	options?: {
 		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof createOrderItem2>>,
+			Awaited<ReturnType<typeof createCartItem>>,
 			TError,
-			CreateOrderItem2MutationVariables,
+			CreateCartItemMutationVariables,
 			TContext
 		>
 		request?: SecondParameter<typeof sendRequest>
 	},
 	queryClient?: QueryClient,
 ): UseMutationResult<
-	Awaited<ReturnType<typeof createOrderItem2>>,
+	Awaited<ReturnType<typeof createCartItem>>,
 	TError,
-	CreateOrderItem2MutationVariables,
+	CreateCartItemMutationVariables,
 	TContext
 > => {
-	return useMutation(getCreateOrderItem2MutationOptions(options), queryClient)
+	return useMutation(getCreateCartItemMutationOptions(options), queryClient)
 }
 export const getCartItemById = (
 	{ id }: GetCartItemByIdPathParameters,

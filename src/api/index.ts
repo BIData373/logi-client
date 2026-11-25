@@ -1,5 +1,6 @@
 export * from "./app/app.ts"
 export * from "./cart-item/cart-item.ts"
+export * from "./categories/categories.ts"
 export * from "./image/image.ts"
 export * from "./order/order.ts"
 export * from "./order-item/order-item.ts"
