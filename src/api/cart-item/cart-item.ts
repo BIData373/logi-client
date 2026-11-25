@@ -55,14 +55,14 @@ const withQueryKey = <T extends object, K>(
 }
 
 export const createCartItem = (
-	{ userId, variantId }: CreateCartItemPathParameters,
+	{ variantId }: CreateCartItemPathParameters,
 	createCartItemDto: CreateCartItemDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
 	return sendRequest<CartItemDto>(
 		{
-			url: `/cart-items/${userId}/${variantId}`,
+			url: `/cart-items/${variantId}`,
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			data: createCartItemDto,

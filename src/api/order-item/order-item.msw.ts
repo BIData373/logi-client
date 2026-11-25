@@ -51,7 +51,7 @@ export const getCreateOrderItemResponseMock = (
 	...overrideResponse,
 })
 
-export const getGetOrderItemByIdResponseMock = (
+export const getGetOrderItemResponseMock = (
 	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
 ): OrderItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
@@ -165,22 +165,19 @@ export const getCreateOrderItemMockHandler = (
 		| ((
 				info: Parameters<
 					HttpResponseResolver<
-						{ userId: string; orderId: string; variantId: string },
+						{ orderId: string; variantId: string },
 						CreateOrderItemDto
 					>
 				>[0],
 		  ) => Promise<OrderItemDto> | OrderItemDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<
-		{ userId: string; orderId: string; variantId: string },
-		CreateOrderItemDto
-	>(
-		"http://localhost:3000//order-items/:userId/:orderId/:variantId",
+	return http.post<{ orderId: string; variantId: string }, CreateOrderItemDto>(
+		"http://localhost:3000//order-items/:orderId/:variantId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<
-					{ userId: string; orderId: string; variantId: string },
+					{ orderId: string; variantId: string },
 					CreateOrderItemDto
 				>
 			>[0],
@@ -198,7 +195,7 @@ export const getCreateOrderItemMockHandler = (
 	)
 }
 
-export const getGetOrderItemByIdMockHandler = (
+export const getGetOrderItemMockHandler = (
 	overrideResponse?:
 		| OrderItemDto
 		| ((
@@ -214,7 +211,7 @@ export const getGetOrderItemByIdMockHandler = (
 					? typeof overrideResponse === "function"
 						? await overrideResponse(info)
 						: overrideResponse
-					: getGetOrderItemByIdResponseMock(),
+					: getGetOrderItemResponseMock(),
 				{ status: 200 },
 			)
 		},
@@ -277,7 +274,7 @@ export const getDeleteOrderItemMockHandler = (
 }
 export const getOrderItemMock = () => [
 	getCreateOrderItemMockHandler(),
-	getGetOrderItemByIdMockHandler(),
+	getGetOrderItemMockHandler(),
 	getUpdateOrderItemMockHandler(),
 	getDeleteOrderItemMockHandler(),
 ]

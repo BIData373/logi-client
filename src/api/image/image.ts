@@ -16,23 +16,18 @@ import { useMutation } from "@tanstack/react-query"
 import type { ErrorType } from "../../axios.ts"
 
 import { sendRequest } from "../../axios.ts"
-import type {
-	CreateImageDto,
-	CreateImagePathParameters,
-	ImageDto,
-} from "../model"
+import type { CreateImageDto, ImageDto } from "../model"
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 
 export const createImage = (
-	{ createdBy }: CreateImagePathParameters,
 	createImageDto: CreateImageDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
 	return sendRequest<ImageDto>(
 		{
-			url: `/images/${createdBy}`,
+			url: `/images`,
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			data: createImageDto,
@@ -74,9 +69,9 @@ export const getCreateImageMutationOptions = <
 		Awaited<ReturnType<typeof createImage>>,
 		CreateImageMutationVariables
 	> = (props) => {
-		const { pathParams, data } = props ?? {}
+		const { data } = props ?? {}
 
-		return createImage(pathParams, data, requestOptions)
+		return createImage(data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -87,10 +82,7 @@ export type CreateImageMutationResult = NonNullable<
 >
 export type CreateImageMutationBody = CreateImageDto
 export type CreateImageMutationError = ErrorType<unknown>
-export type CreateImageMutationVariables = {
-	pathParams: CreateImagePathParameters
-	data: CreateImageDto
-}
+export type CreateImageMutationVariables = { data: CreateImageDto }
 
 export const useCreateImage = <TError = ErrorType<unknown>, TContext = unknown>(
 	options?: {

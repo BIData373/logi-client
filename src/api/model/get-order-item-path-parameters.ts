@@ -6,6 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export type CreateOrderPathParameters = {
-	userId: number
+export type GetOrderItemPathParameters = {
+	id: number
 }

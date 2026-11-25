@@ -28,7 +28,7 @@ import type {
 	CreateOrderItemDto,
 	CreateOrderItemPathParameters,
 	DeleteOrderItemPathParameters,
-	GetOrderItemByIdPathParameters,
+	GetOrderItemPathParameters,
 	OrderItemDto,
 	UpdateOrderItemDto,
 	UpdateOrderItemPathParameters,
@@ -55,14 +55,14 @@ const withQueryKey = <T extends object, K>(
 }
 
 export const createOrderItem = (
-	{ userId, orderId, variantId }: CreateOrderItemPathParameters,
+	{ orderId, variantId }: CreateOrderItemPathParameters,
 	createOrderItemDto: CreateOrderItemDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
 	return sendRequest<OrderItemDto>(
 		{
-			url: `/order-items/${userId}/${orderId}/${variantId}`,
+			url: `/order-items/${orderId}/${variantId}`,
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			data: createOrderItemDto,
@@ -144,8 +144,8 @@ export const useCreateOrderItem = <
 > => {
 	return useMutation(getCreateOrderItemMutationOptions(options), queryClient)
 }
-export const getOrderItemById = (
-	{ id }: GetOrderItemByIdPathParameters,
+export const getOrderItem = (
+	{ id }: GetOrderItemPathParameters,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
@@ -155,35 +155,29 @@ export const getOrderItemById = (
 	)
 }
 
-export const getGetOrderItemByIdQueryKey = ({
-	id,
-}: GetOrderItemByIdPathParameters) => {
+export const getGetOrderItemQueryKey = ({ id }: GetOrderItemPathParameters) => {
 	return [`/order-items/${id}`] as const
 }
 
-export const getGetOrderItemByIdQueryOptions = <
-	TData = Awaited<ReturnType<typeof getOrderItemById>>,
+export const getGetOrderItemQueryOptions = <
+	TData = Awaited<ReturnType<typeof getOrderItem>>,
 	TError = ErrorType<unknown>,
 >(
-	{ id }: GetOrderItemByIdPathParameters,
+	{ id }: GetOrderItemPathParameters,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getOrderItemById>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getOrderItem>>, TError, TData>
 		>
 		request?: SecondParameter<typeof sendRequest>
 	},
 ) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {}
 
-	const queryKey = queryOptions?.queryKey ?? getGetOrderItemByIdQueryKey({ id })
+	const queryKey = queryOptions?.queryKey ?? getGetOrderItemQueryKey({ id })
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getOrderItemById>>
-	> = ({ signal }) => getOrderItemById({ id }, requestOptions, signal)
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getOrderItem>>> = ({
+		signal,
+	}) => getOrderItem({ id }, requestOptions, signal)
 
 	return {
 		queryKey,
@@ -191,35 +185,31 @@ export const getGetOrderItemByIdQueryOptions = <
 		enabled: id !== null && id !== undefined,
 		...queryOptions,
 	} as UseQueryOptions<
-		Awaited<ReturnType<typeof getOrderItemById>>,
+		Awaited<ReturnType<typeof getOrderItem>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetOrderItemByIdQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getOrderItemById>>
+export type GetOrderItemQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getOrderItem>>
 >
-export type GetOrderItemByIdQueryError = ErrorType<unknown>
+export type GetOrderItemQueryError = ErrorType<unknown>
 
-export function useGetOrderItemById<
-	TData = Awaited<ReturnType<typeof getOrderItemById>>,
+export function useGetOrderItem<
+	TData = Awaited<ReturnType<typeof getOrderItem>>,
 	TError = ErrorType<unknown>,
 >(
-	pathParams: GetOrderItemByIdPathParameters,
+	pathParams: GetOrderItemPathParameters,
 	options: {
 		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getOrderItemById>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getOrderItem>>, TError, TData>
 		> &
 			Pick<
 				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getOrderItemById>>,
+					Awaited<ReturnType<typeof getOrderItem>>,
 					TError,
-					Awaited<ReturnType<typeof getOrderItemById>>
+					Awaited<ReturnType<typeof getOrderItem>>
 				>,
 				"initialData"
 			>
@@ -229,24 +219,20 @@ export function useGetOrderItemById<
 ): DefinedUseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData, TError>
 }
-export function useGetOrderItemById<
-	TData = Awaited<ReturnType<typeof getOrderItemById>>,
+export function useGetOrderItem<
+	TData = Awaited<ReturnType<typeof getOrderItem>>,
 	TError = ErrorType<unknown>,
 >(
-	pathParams: GetOrderItemByIdPathParameters,
+	pathParams: GetOrderItemPathParameters,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getOrderItemById>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getOrderItem>>, TError, TData>
 		> &
 			Pick<
 				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getOrderItemById>>,
+					Awaited<ReturnType<typeof getOrderItem>>,
 					TError,
-					Awaited<ReturnType<typeof getOrderItemById>>
+					Awaited<ReturnType<typeof getOrderItem>>
 				>,
 				"initialData"
 			>
@@ -256,18 +242,14 @@ export function useGetOrderItemById<
 ): UseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData, TError>
 }
-export function useGetOrderItemById<
-	TData = Awaited<ReturnType<typeof getOrderItemById>>,
+export function useGetOrderItem<
+	TData = Awaited<ReturnType<typeof getOrderItem>>,
 	TError = ErrorType<unknown>,
 >(
-	pathParams: GetOrderItemByIdPathParameters,
+	pathParams: GetOrderItemPathParameters,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getOrderItemById>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getOrderItem>>, TError, TData>
 		>
 		request?: SecondParameter<typeof sendRequest>
 	},
@@ -275,18 +257,14 @@ export function useGetOrderItemById<
 ): UseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData, TError>
 }
-export function useGetOrderItemById<
-	TData = Awaited<ReturnType<typeof getOrderItemById>>,
+export function useGetOrderItem<
+	TData = Awaited<ReturnType<typeof getOrderItem>>,
 	TError = ErrorType<unknown>,
 >(
-	{ id }: GetOrderItemByIdPathParameters,
+	{ id }: GetOrderItemPathParameters,
 	options?: {
 		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getOrderItemById>>,
-				TError,
-				TData
-			>
+			UseQueryOptions<Awaited<ReturnType<typeof getOrderItem>>, TError, TData>
 		>
 		request?: SecondParameter<typeof sendRequest>
 	},
@@ -294,7 +272,7 @@ export function useGetOrderItemById<
 ): UseQueryResult<TData, TError> & {
 	queryKey: DataTag<QueryKey, TData, TError>
 } {
-	const queryOptions = getGetOrderItemByIdQueryOptions({ id }, options)
+	const queryOptions = getGetOrderItemQueryOptions({ id }, options)
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
 		TData,

@@ -120,22 +120,16 @@ export const getCreateVariantMockHandler = (
 		| VariantDto
 		| ((
 				info: Parameters<
-					HttpResponseResolver<
-						{ userId: string; productId: string },
-						CreateVariantDto
-					>
+					HttpResponseResolver<{ productId: string }, CreateVariantDto>
 				>[0],
 		  ) => Promise<VariantDto> | VariantDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ userId: string; productId: string }, CreateVariantDto>(
-		"http://localhost:3000//variants/:userId/:productId",
+	return http.post<{ productId: string }, CreateVariantDto>(
+		"http://localhost:3000//variants/:productId",
 		async (
 			info: Parameters<
-				HttpResponseResolver<
-					{ userId: string; productId: string },
-					CreateVariantDto
-				>
+				HttpResponseResolver<{ productId: string }, CreateVariantDto>
 			>[0],
 		) => {
 			return HttpResponse.json(

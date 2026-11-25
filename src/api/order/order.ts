@@ -25,7 +25,7 @@ import type { ErrorType } from "../../axios.ts"
 
 import { sendRequest } from "../../axios.ts"
 import type {
-	CreateOrderPathParameters,
+	CreateOrderDto,
 	DeleteOrderPathParameters,
 	GetOrderByIdPathParameters,
 	OrderDto,
@@ -54,12 +54,18 @@ const withQueryKey = <T extends object, K>(
 }
 
 export const createOrder = (
-	{ userId }: CreateOrderPathParameters,
+	createOrderDto: CreateOrderDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
 	return sendRequest<OrderDto>(
-		{ url: `/orders/${userId}`, method: "POST", signal },
+		{
+			url: `/orders`,
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			data: createOrderDto,
+			signal,
+		},
 		options,
 	)
 }
@@ -96,9 +102,9 @@ export const getCreateOrderMutationOptions = <
 		Awaited<ReturnType<typeof createOrder>>,
 		CreateOrderMutationVariables
 	> = (props) => {
-		const { pathParams } = props ?? {}
+		const { data } = props ?? {}
 
-		return createOrder(pathParams, requestOptions)
+		return createOrder(data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -107,11 +113,9 @@ export const getCreateOrderMutationOptions = <
 export type CreateOrderMutationResult = NonNullable<
 	Awaited<ReturnType<typeof createOrder>>
 >
-
+export type CreateOrderMutationBody = CreateOrderDto
 export type CreateOrderMutationError = ErrorType<unknown>
-export type CreateOrderMutationVariables = {
-	pathParams: CreateOrderPathParameters
-}
+export type CreateOrderMutationVariables = { data: CreateOrderDto }
 
 export const useCreateOrder = <TError = ErrorType<unknown>, TContext = unknown>(
 	options?: {

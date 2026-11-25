@@ -55,14 +55,14 @@ const withQueryKey = <T extends object, K>(
 }
 
 export const createVariant = (
-	{ userId, productId }: CreateVariantPathParameters,
+	{ productId }: CreateVariantPathParameters,
 	createVariantDto: CreateVariantDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
 	return sendRequest<VariantDto>(
 		{
-			url: `/variants/${userId}/${productId}`,
+			url: `/variants/${productId}`,
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			data: createVariantDto,

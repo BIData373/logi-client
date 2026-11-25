@@ -6,10 +6,14 @@
  * OpenAPI spec version: 1.0
  */
 import { faker } from "@faker-js/faker"
-import type { HttpResponseResolver, RequestHandlerOptions } from "msw"
+import type {
+	HttpResponseResolver,
+	PathParams,
+	RequestHandlerOptions,
+} from "msw"
 import { HttpResponse, http } from "msw"
 
-import type { OrderDto, UpdateOrderDto } from "../model"
+import type { CreateOrderDto, OrderDto, UpdateOrderDto } from "../model"
 
 export const getCreateOrderResponseMock = (
 	overrideResponse: Partial<Extract<OrderDto, object>> = {},
@@ -203,13 +207,15 @@ export const getCreateOrderMockHandler = (
 	overrideResponse?:
 		| OrderDto
 		| ((
-				info: Parameters<HttpResponseResolver<{ userId: string }>>[0],
+				info: Parameters<HttpResponseResolver<PathParams, CreateOrderDto>>[0],
 		  ) => Promise<OrderDto> | OrderDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ userId: string }>(
-		"http://localhost:3000//orders/:userId",
-		async (info: Parameters<HttpResponseResolver<{ userId: string }>>[0]) => {
+	return http.post<PathParams, CreateOrderDto>(
+		"http://localhost:3000//orders",
+		async (
+			info: Parameters<HttpResponseResolver<PathParams, CreateOrderDto>>[0],
+		) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
 					? typeof overrideResponse === "function"

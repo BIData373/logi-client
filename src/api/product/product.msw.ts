@@ -6,7 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import { faker } from "@faker-js/faker"
-import type { HttpResponseResolver, RequestHandlerOptions } from "msw"
+import type {
+	HttpResponseResolver,
+	PathParams,
+	RequestHandlerOptions,
+} from "msw"
 import { HttpResponse, http } from "msw"
 
 import type {
@@ -136,18 +140,14 @@ export const getCreateProductMockHandler = (
 	overrideResponse?:
 		| ProductDto
 		| ((
-				info: Parameters<
-					HttpResponseResolver<{ userId: string }, CreateProductDto>
-				>[0],
+				info: Parameters<HttpResponseResolver<PathParams, CreateProductDto>>[0],
 		  ) => Promise<ProductDto> | ProductDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ userId: string }, CreateProductDto>(
-		"http://localhost:3000//products/:userId",
+	return http.post<PathParams, CreateProductDto>(
+		"http://localhost:3000//products",
 		async (
-			info: Parameters<
-				HttpResponseResolver<{ userId: string }, CreateProductDto>
-			>[0],
+			info: Parameters<HttpResponseResolver<PathParams, CreateProductDto>>[0],
 		) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

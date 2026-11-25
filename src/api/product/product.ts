@@ -26,7 +26,6 @@ import type { ErrorType } from "../../axios.ts"
 import { sendRequest } from "../../axios.ts"
 import type {
 	CreateProductDto,
-	CreateProductPathParameters,
 	DeleteProductPathParameters,
 	GetProductByIdPathParameters,
 	ProductDto,
@@ -56,14 +55,13 @@ const withQueryKey = <T extends object, K>(
 }
 
 export const createProduct = (
-	{ userId }: CreateProductPathParameters,
 	createProductDto: CreateProductDto,
 	options?: SecondParameter<typeof sendRequest>,
 	signal?: AbortSignal,
 ) => {
 	return sendRequest<ProductDto>(
 		{
-			url: `/products/${userId}`,
+			url: `/products`,
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			data: createProductDto,
@@ -105,9 +103,9 @@ export const getCreateProductMutationOptions = <
 		Awaited<ReturnType<typeof createProduct>>,
 		CreateProductMutationVariables
 	> = (props) => {
-		const { pathParams, data } = props ?? {}
+		const { data } = props ?? {}
 
-		return createProduct(pathParams, data, requestOptions)
+		return createProduct(data, requestOptions)
 	}
 
 	return { mutationFn, ...mutationOptions }
@@ -118,10 +116,7 @@ export type CreateProductMutationResult = NonNullable<
 >
 export type CreateProductMutationBody = CreateProductDto
 export type CreateProductMutationError = ErrorType<unknown>
-export type CreateProductMutationVariables = {
-	pathParams: CreateProductPathParameters
-	data: CreateProductDto
-}
+export type CreateProductMutationVariables = { data: CreateProductDto }
 
 export const useCreateProduct = <
 	TError = ErrorType<unknown>,

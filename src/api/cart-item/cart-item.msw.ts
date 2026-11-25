@@ -156,22 +156,16 @@ export const getCreateCartItemMockHandler = (
 		| CartItemDto
 		| ((
 				info: Parameters<
-					HttpResponseResolver<
-						{ userId: string; variantId: string },
-						CreateCartItemDto
-					>
+					HttpResponseResolver<{ variantId: string }, CreateCartItemDto>
 				>[0],
 		  ) => Promise<CartItemDto> | CartItemDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ userId: string; variantId: string }, CreateCartItemDto>(
-		"http://localhost:3000//cart-items/:userId/:variantId",
+	return http.post<{ variantId: string }, CreateCartItemDto>(
+		"http://localhost:3000//cart-items/:variantId",
 		async (
 			info: Parameters<
-				HttpResponseResolver<
-					{ userId: string; variantId: string },
-					CreateCartItemDto
-				>
+				HttpResponseResolver<{ variantId: string }, CreateCartItemDto>
 			>[0],
 		) => {
 			return HttpResponse.json(

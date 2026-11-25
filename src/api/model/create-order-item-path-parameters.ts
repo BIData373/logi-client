@@ -7,7 +7,6 @@
  */
 
 export type CreateOrderItemPathParameters = {
-	userId: number
 	orderId: number
 	variantId: number
 }
