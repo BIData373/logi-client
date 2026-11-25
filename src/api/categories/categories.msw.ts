@@ -98,7 +98,7 @@ export const getCreateCategoryMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ createdBy: string }, CreateCategoryDto>(
-		"http://localhost:8080/api/categories/:createdBy",
+		"http://localhost:3000//categories/:createdBy",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ createdBy: string }, CreateCategoryDto>
@@ -126,7 +126,7 @@ export const getGetCategoryByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:8080/api/categories/:id",
+		"http://localhost:3000//categories/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -152,7 +152,7 @@ export const getUpdateCategoryMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateCategoryDto>(
-		"http://localhost:8080/api/categories/:id",
+		"http://localhost:3000//categories/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateCategoryDto>
@@ -180,7 +180,7 @@ export const getDeleteCategoryMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:8080/api/categories/:id",
+		"http://localhost:3000//categories/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -204,7 +204,7 @@ export const getGetAllCategoriesMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"http://localhost:8080/api/categories",
+		"http://localhost:3000//categories",
 		async (info: Parameters<HttpResponseResolver>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
