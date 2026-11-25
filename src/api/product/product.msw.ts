@@ -29,6 +29,7 @@ export const getCreateProductResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	...overrideResponse,
 })
@@ -48,6 +49,7 @@ export const getGetAllProductsResponseMock = (): ProductDto[] =>
 		).map(() => ({
 			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 			url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			id: faker.number.float({ fractionDigits: 2 }),
 		})),
 	}))
 
@@ -64,6 +66,7 @@ export const getGetProductByIdResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	variants: Array.from(
 		{ length: faker.number.int({ min: 1, max: 10 }) },
@@ -86,6 +89,7 @@ export const getGetProductByIdResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	})),
@@ -105,6 +109,7 @@ export const getUpdateProductResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	...overrideResponse,
 })
@@ -122,6 +127,7 @@ export const getDeleteProductResponseMock = (
 	).map(() => ({
 		name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 		url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		id: faker.number.float({ fractionDigits: 2 }),
 	})),
 	...overrideResponse,
 })
@@ -137,7 +143,7 @@ export const getCreateProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string }, CreateProductDto>(
-		"http://localhost:3000/api/products/:userId",
+		"http://localhost:8080/api/products/:userId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ userId: string }, CreateProductDto>
@@ -165,7 +171,7 @@ export const getGetAllProductsMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"http://localhost:3000/api/products",
+		"http://localhost:8080/api/products",
 		async (info: Parameters<HttpResponseResolver>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -189,7 +195,7 @@ export const getGetProductByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:3000/api/products/:id",
+		"http://localhost:8080/api/products/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -215,7 +221,7 @@ export const getUpdateProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateProductDto>(
-		"http://localhost:3000/api/products/:id",
+		"http://localhost:8080/api/products/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateProductDto>
@@ -243,7 +249,7 @@ export const getDeleteProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:3000/api/products/:id",
+		"http://localhost:8080/api/products/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

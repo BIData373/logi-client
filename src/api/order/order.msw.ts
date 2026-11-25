@@ -25,7 +25,7 @@ export const getCreateOrderResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		id: faker.number.float({ fractionDigits: 2 }),
-		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		orderId: faker.number.float({ fractionDigits: 2 }),
 		createdBy: faker.number.float({ fractionDigits: 2 }),
 		estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -50,6 +50,7 @@ export const getCreateOrderResponseMock = (
 				).map(() => ({
 					name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 					url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					id: faker.number.float({ fractionDigits: 2 }),
 				})),
 			},
 		},
@@ -71,7 +72,7 @@ export const getGetOrderByIdResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		id: faker.number.float({ fractionDigits: 2 }),
-		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		orderId: faker.number.float({ fractionDigits: 2 }),
 		createdBy: faker.number.float({ fractionDigits: 2 }),
 		estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -96,6 +97,7 @@ export const getGetOrderByIdResponseMock = (
 				).map(() => ({
 					name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 					url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					id: faker.number.float({ fractionDigits: 2 }),
 				})),
 			},
 		},
@@ -117,7 +119,7 @@ export const getUpdateOrderResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		id: faker.number.float({ fractionDigits: 2 }),
-		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		orderId: faker.number.float({ fractionDigits: 2 }),
 		createdBy: faker.number.float({ fractionDigits: 2 }),
 		estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -142,6 +144,7 @@ export const getUpdateOrderResponseMock = (
 				).map(() => ({
 					name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 					url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					id: faker.number.float({ fractionDigits: 2 }),
 				})),
 			},
 		},
@@ -163,7 +166,7 @@ export const getDeleteOrderResponseMock = (
 		(_, i) => i + 1,
 	).map(() => ({
 		id: faker.number.float({ fractionDigits: 2 }),
-		orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		orderId: faker.number.float({ fractionDigits: 2 }),
 		createdBy: faker.number.float({ fractionDigits: 2 }),
 		estimatedDate: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
 		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
@@ -188,6 +191,7 @@ export const getDeleteOrderResponseMock = (
 				).map(() => ({
 					name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 					url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					id: faker.number.float({ fractionDigits: 2 }),
 				})),
 			},
 		},
@@ -204,7 +208,7 @@ export const getCreateOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string }>(
-		"http://localhost:3000/api/orders/:userId",
+		"http://localhost:8080/api/orders/:userId",
 		async (info: Parameters<HttpResponseResolver<{ userId: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -228,7 +232,7 @@ export const getGetOrderByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:3000/api/orders/:id",
+		"http://localhost:8080/api/orders/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -254,7 +258,7 @@ export const getUpdateOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateOrderDto>(
-		"http://localhost:3000/api/orders/:id",
+		"http://localhost:8080/api/orders/:id",
 		async (
 			info: Parameters<HttpResponseResolver<{ id: string }, UpdateOrderDto>>[0],
 		) => {
@@ -280,7 +284,7 @@ export const getDeleteOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:3000/api/orders/:id",
+		"http://localhost:8080/api/orders/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

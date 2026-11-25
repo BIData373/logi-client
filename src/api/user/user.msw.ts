@@ -13,7 +13,7 @@ import type {
 } from "msw"
 import { HttpResponse, http } from "msw"
 
-import type { CreateUserDto, OrderDto, UserDto } from "../model"
+import type { CartItemDto, CreateUserDto, OrderDto, UserDto } from "../model"
 
 export const getCreateUserResponseMock = (
 	overrideResponse: Partial<Extract<UserDto, object>> = {},
@@ -40,7 +40,7 @@ export const getGetUserOrdersResponseMock = (): OrderDto[] =>
 			(_, i) => i + 1,
 		).map(() => ({
 			id: faker.number.float({ fractionDigits: 2 }),
-			orderId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			orderId: faker.number.float({ fractionDigits: 2 }),
 			createdBy: faker.number.float({ fractionDigits: 2 }),
 			estimatedDate: new Date(
 				faker.date.past().toISOString().slice(0, 19) + "Z",
@@ -67,10 +67,46 @@ export const getGetUserOrdersResponseMock = (): OrderDto[] =>
 					).map(() => ({
 						name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 						url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+						id: faker.number.float({ fractionDigits: 2 }),
 					})),
 				},
 			},
 		})),
+	}))
+
+export const getGetUserCartResponseMock = (): CartItemDto[] =>
+	Array.from(
+		{ length: faker.number.int({ min: 1, max: 10 }) },
+		(_, i) => i + 1,
+	).map(() => ({
+		id: faker.number.float({ fractionDigits: 2 }),
+		createdBy: faker.number.float({ fractionDigits: 2 }),
+		status: faker.string.alpha({ length: { min: 10, max: 20 } }),
+		deletedAt: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
+		createdAt: new Date(faker.date.past().toISOString().slice(0, 19) + "Z"),
+		quantity: faker.number.float({ fractionDigits: 2 }),
+		variant: {
+			id: faker.number.float({ fractionDigits: 2 }),
+			name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			createdBy: faker.number.float({ fractionDigits: 2 }),
+			description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			sku: faker.string.alpha({ length: { min: 10, max: 20 } }),
+			isPrivate: faker.datatype.boolean(),
+			product: {
+				id: faker.number.float({ fractionDigits: 2 }),
+				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				createdBy: faker.number.float({ fractionDigits: 2 }),
+				description: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				images: Array.from(
+					{ length: faker.number.int({ min: 1, max: 10 }) },
+					(_, i) => i + 1,
+				).map(() => ({
+					name: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+					id: faker.number.float({ fractionDigits: 2 }),
+				})),
+			},
+		},
 	}))
 
 export const getCreateUserMockHandler = (
@@ -82,7 +118,7 @@ export const getCreateUserMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<PathParams, CreateUserDto>(
-		"http://localhost:3000/api/users",
+		"http://localhost:8080/api/users",
 		async (
 			info: Parameters<HttpResponseResolver<PathParams, CreateUserDto>>[0],
 		) => {
@@ -108,7 +144,7 @@ export const getGetUserOrdersMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:3000/api/users/:id/orders",
+		"http://localhost:8080/api/users/:id/orders",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -122,7 +158,32 @@ export const getGetUserOrdersMockHandler = (
 		options,
 	)
 }
+
+export const getGetUserCartMockHandler = (
+	overrideResponse?:
+		| CartItemDto[]
+		| ((
+				info: Parameters<HttpResponseResolver<{ id: string }>>[0],
+		  ) => Promise<CartItemDto[]> | CartItemDto[]),
+	options?: RequestHandlerOptions,
+) => {
+	return http.get<{ id: string }>(
+		"http://localhost:8080/api/users/:id/cart",
+		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
+			return HttpResponse.json(
+				overrideResponse !== undefined
+					? typeof overrideResponse === "function"
+						? await overrideResponse(info)
+						: overrideResponse
+					: getGetUserCartResponseMock(),
+				{ status: 200 },
+			)
+		},
+		options,
+	)
+}
 export const getUserMock = () => [
 	getCreateUserMockHandler(),
 	getGetUserOrdersMockHandler(),
+	getGetUserCartMockHandler(),
 ]

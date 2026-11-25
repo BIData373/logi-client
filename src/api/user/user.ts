@@ -25,7 +25,9 @@ import type { ErrorType } from "../../axios.ts"
 
 import { sendRequest } from "../../axios.ts"
 import type {
+	CartItemDto,
 	CreateUserDto,
+	GetUserCartPathParameters,
 	GetUserOrdersPathParameters,
 	OrderDto,
 	UserDto,
@@ -265,6 +267,144 @@ export function useGetUserOrders<
 	queryKey: DataTag<QueryKey, TData, TError>
 } {
 	const queryOptions = getGetUserOrdersQueryOptions({ id }, options)
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+		TData,
+		TError
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+	return withQueryKey(query, queryOptions.queryKey)
+}
+
+export const getUserCart = (
+	{ id }: GetUserCartPathParameters,
+	options?: SecondParameter<typeof sendRequest>,
+	signal?: AbortSignal,
+) => {
+	return sendRequest<CartItemDto[]>(
+		{ url: `/users/${id}/cart`, method: "GET", signal },
+		options,
+	)
+}
+
+export const getGetUserCartQueryKey = ({ id }: GetUserCartPathParameters) => {
+	return [`/users/${id}/cart`] as const
+}
+
+export const getGetUserCartQueryOptions = <
+	TData = Awaited<ReturnType<typeof getUserCart>>,
+	TError = ErrorType<unknown>,
+>(
+	{ id }: GetUserCartPathParameters,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
+		>
+		request?: SecondParameter<typeof sendRequest>
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {}
+
+	const queryKey = queryOptions?.queryKey ?? getGetUserCartQueryKey({ id })
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserCart>>> = ({
+		signal,
+	}) => getUserCart({ id }, requestOptions, signal)
+
+	return {
+		queryKey,
+		queryFn,
+		enabled: id !== null && id !== undefined,
+		...queryOptions,
+	} as UseQueryOptions<
+		Awaited<ReturnType<typeof getUserCart>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUserCartQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getUserCart>>
+>
+export type GetUserCartQueryError = ErrorType<unknown>
+
+export function useGetUserCart<
+	TData = Awaited<ReturnType<typeof getUserCart>>,
+	TError = ErrorType<unknown>,
+>(
+	pathParams: GetUserCartPathParameters,
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getUserCart>>,
+					TError,
+					Awaited<ReturnType<typeof getUserCart>>
+				>,
+				"initialData"
+			>
+		request?: SecondParameter<typeof sendRequest>
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserCart<
+	TData = Awaited<ReturnType<typeof getUserCart>>,
+	TError = ErrorType<unknown>,
+>(
+	pathParams: GetUserCartPathParameters,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getUserCart>>,
+					TError,
+					Awaited<ReturnType<typeof getUserCart>>
+				>,
+				"initialData"
+			>
+		request?: SecondParameter<typeof sendRequest>
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserCart<
+	TData = Awaited<ReturnType<typeof getUserCart>>,
+	TError = ErrorType<unknown>,
+>(
+	pathParams: GetUserCartPathParameters,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
+		>
+		request?: SecondParameter<typeof sendRequest>
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserCart<
+	TData = Awaited<ReturnType<typeof getUserCart>>,
+	TError = ErrorType<unknown>,
+>(
+	{ id }: GetUserCartPathParameters,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getUserCart>>, TError, TData>
+		>
+		request?: SecondParameter<typeof sendRequest>
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+	queryKey: DataTag<QueryKey, TData, TError>
+} {
+	const queryOptions = getGetUserCartQueryOptions({ id }, options)
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<
 		TData,

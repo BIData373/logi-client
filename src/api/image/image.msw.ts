@@ -16,6 +16,7 @@ export const getCreateImageResponseMock = (
 ): ImageDto => ({
 	name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 	url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+	id: faker.number.float({ fractionDigits: 2 }),
 	...overrideResponse,
 })
 
@@ -30,7 +31,7 @@ export const getCreateImageMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ createdBy: string }, CreateImageDto>(
-		"http://localhost:3000/api/images/:createdBy",
+		"http://localhost:8080/api/images/:createdBy",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ createdBy: string }, CreateImageDto>

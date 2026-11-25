@@ -1,5 +1,6 @@
 export { getAppMock } from "./app/app.msw.ts"
 export { getCartItemMock } from "./cart-item/cart-item.msw.ts"
+export { getCategoriesMock } from "./categories/categories.msw.ts"
 export { getImageMock } from "./image/image.msw.ts"
 export { getOrderMock } from "./order/order.msw.ts"
 export { getOrderItemMock } from "./order-item/order-item.msw.ts"

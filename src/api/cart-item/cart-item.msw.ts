@@ -15,7 +15,7 @@ import type {
 	UpdateCartItemDto,
 } from "../model"
 
-export const getCreateOrderItem2ResponseMock = (
+export const getCreateCartItemResponseMock = (
 	overrideResponse: Partial<Extract<CartItemDto, object>> = {},
 ): CartItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
@@ -42,6 +42,7 @@ export const getCreateOrderItem2ResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -75,6 +76,7 @@ export const getGetCartItemByIdResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -108,6 +110,7 @@ export const getUpdateCartItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
@@ -141,13 +144,14 @@ export const getDeleteCartItemResponseMock = (
 			).map(() => ({
 				name: faker.string.alpha({ length: { min: 10, max: 20 } }),
 				url: faker.string.alpha({ length: { min: 10, max: 20 } }),
+				id: faker.number.float({ fractionDigits: 2 }),
 			})),
 		},
 	},
 	...overrideResponse,
 })
 
-export const getCreateOrderItem2MockHandler = (
+export const getCreateCartItemMockHandler = (
 	overrideResponse?:
 		| CartItemDto
 		| ((
@@ -161,7 +165,7 @@ export const getCreateOrderItem2MockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.post<{ userId: string; variantId: string }, CreateCartItemDto>(
-		"http://localhost:3000/api/cart-items/:userId/:variantId",
+		"http://localhost:8080/api/cart-items/:userId/:variantId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<
@@ -175,7 +179,7 @@ export const getCreateOrderItem2MockHandler = (
 					? typeof overrideResponse === "function"
 						? await overrideResponse(info)
 						: overrideResponse
-					: getCreateOrderItem2ResponseMock(),
+					: getCreateCartItemResponseMock(),
 				{ status: 200 },
 			)
 		},
@@ -192,7 +196,7 @@ export const getGetCartItemByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:3000/api/cart-items/:id",
+		"http://localhost:8080/api/cart-items/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -218,7 +222,7 @@ export const getUpdateCartItemMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateCartItemDto>(
-		"http://localhost:3000/api/cart-items/:id",
+		"http://localhost:8080/api/cart-items/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateCartItemDto>
@@ -246,7 +250,7 @@ export const getDeleteCartItemMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:3000/api/cart-items/:id",
+		"http://localhost:8080/api/cart-items/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -261,7 +265,7 @@ export const getDeleteCartItemMockHandler = (
 	)
 }
 export const getCartItemMock = () => [
-	getCreateOrderItem2MockHandler(),
+	getCreateCartItemMockHandler(),
 	getGetCartItemByIdMockHandler(),
 	getUpdateCartItemMockHandler(),
 	getDeleteCartItemMockHandler(),

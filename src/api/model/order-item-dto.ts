@@ -9,7 +9,7 @@ import type { VariantDto } from "./variant-dto.ts"
 
 export interface OrderItemDto {
 	id: number
-	orderId: string
+	orderId: number
 	createdBy: number
 	estimatedDate: Date
 	status: string

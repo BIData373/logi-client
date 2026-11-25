@@ -16,7 +16,7 @@ export const getAppControllerGetRootMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"http://localhost:3000/api/",
+		"http://localhost:8080/api/",
 		async (info: Parameters<HttpResponseResolver>[0]) => {
 			if (typeof overrideResponse === "function") {
 				await overrideResponse(info)

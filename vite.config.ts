@@ -9,6 +9,20 @@ import { defineConfig } from "vite"
 const config = defineConfig({
 	server: {
 		port: 8080,
+		proxy: {
+			// Forward /api/* to the backend (which serves routes without the /api prefix),
+			// so the browser only talks to this origin and CORS doesn't apply.
+			"^/api/": {
+				target: "http://localhost:3000",
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/api/, ""),
+			},
+			// Swagger JSON used by orval codegen
+			"/api-json": {
+				target: "http://localhost:3000",
+				changeOrigin: true,
+			},
+		},
 	},
 	resolve: { tsconfigPaths: true },
 	plugins: [
