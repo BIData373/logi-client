@@ -6,6 +6,10 @@ const ProductParamsSchema = z.object({
 	productId: z.coerce.number().int().positive(),
 })
 
+const ProductSearchParamsSchema = z.object({
+	variant: z.number().int().positive().optional(),
+})
+
 function parseProductParams(raw: Record<string, string>) {
 	const result = ProductParamsSchema.safeParse(raw)
 	if (!result.success) {
@@ -20,6 +24,7 @@ export const Route = createFileRoute("/products/$productId")({
 		parse: parseProductParams,
 		stringify: ({ productId }) => ({ productId: String(productId) }),
 	},
+	validateSearch: ProductSearchParamsSchema,
 	head: () => ({
 		meta: [
 			{
