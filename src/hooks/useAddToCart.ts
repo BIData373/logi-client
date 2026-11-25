@@ -18,7 +18,6 @@ export default function useAddToCart() {
 	function addToCart(variantId: number, quantity: number) {
 		mutate({
 			pathParams: {
-				userId,
 				variantId,
 			},
 			data: {
