@@ -1,7 +1,7 @@
 import { cn } from "cn"
-import { Minus, Plus, type LucideIcon } from "lucide-react"
+import { Minus, Plus } from "lucide-react"
 import { useState } from "react"
-import { Button } from "#/components/ui/button"
+import QuantityStepperButton from "./QuantityStepperButton"
 
 interface QuantityStepperProps {
 	value?: number
@@ -23,7 +23,7 @@ export function QuantityStepper({
 	const [inner, setInner] = useState(defaultValue)
 	const current = value ?? inner
 
-	const set = (next: number) => {
+	function set(next: number) {
 		const clamped = Math.max(min, Math.min(max, next))
 		if (value === undefined) setInner(clamped)
 		onValueChange?.(clamped)
@@ -54,31 +54,5 @@ export function QuantityStepper({
 				disabled={current <= min}
 			/>
 		</div>
-	)
-}
-
-// stepper button
-interface QuantityStepperButtonProps {
-	icon: LucideIcon
-	onClick: () => void
-	disabled?: boolean
-}
-
-function QuantityStepperButton({
-	disabled,
-	onClick,
-	...props
-}: QuantityStepperButtonProps) {
-	return (
-		<Button
-			variant="ghost"
-			size="icon-sm"
-			aria-label="הפחת"
-			className={"rounded-full bg-card shadow-xs hover:bg-card"}
-			disabled={disabled}
-			onClick={onClick}
-		>
-			<props.icon strokeWidth={2} className="size-4" />
-		</Button>
 	)
 }

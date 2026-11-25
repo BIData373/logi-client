@@ -8,7 +8,9 @@ const ProductParamsSchema = z.object({
 
 function parseProductParams(raw: Record<string, string>) {
 	const result = ProductParamsSchema.safeParse(raw)
-	if (!result.success) throw notFound()
+	if (!result.success) {
+		throw notFound()
+	}
 	return result.data
 }
 

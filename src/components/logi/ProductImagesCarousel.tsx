@@ -52,18 +52,15 @@ export default function ProductImagesCarousel({
 				</CarouselContent>
 			</Carousel>
 			<div className="flex gap-1 justify-center">
-				{images.map((image, i) => {
-					const active = i === currentIndex
-					return (
-						<div
-							className={cn(
-								"h-0.5 w-6 rounded-full transition-colors",
-								active ? "bg-foreground" : "bg-input",
-							)}
-							key={image.name}
-						/>
-					)
-				})}
+				{images.map((image, i) => (
+					<div
+						className={cn(
+							"h-0.5 w-6 rounded-full transition-colors",
+							i === currentIndex ? "bg-foreground" : "bg-input",
+						)}
+						key={image.name}
+					/>
+				))}
 			</div>
 		</div>
 	)

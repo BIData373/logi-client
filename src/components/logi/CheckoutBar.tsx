@@ -3,21 +3,29 @@ import { Button } from "#/components/ui/button"
 import AddToCartButton from "./AddToCartButton"
 import { QuantityStepper } from "./QuantityStepper"
 
+type CheckoutBarVariant = "add" | "summary"
+
 interface CheckoutBarProps {
 	onAction?: () => void
 	className?: string
-	variant: "add" | "summary"
+	variant: CheckoutBarVariant
 	// for "add"
 	quantity?: number
-	onQuantityChange?: (quantity: number) => void
+	onQuantityChange?(quantity: number): void
 	// for "summary"
 	count?: number
 	countLabel?: string
 }
 
-export function CheckoutBar(props: CheckoutBarProps) {
-	const { onAction, className } = props
-
+export function CheckoutBar({
+	variant,
+	className,
+	quantity,
+	onQuantityChange,
+	count,
+	countLabel,
+	onAction,
+}: CheckoutBarProps) {
 	return (
 		<div
 			className={cn(
@@ -25,23 +33,23 @@ export function CheckoutBar(props: CheckoutBarProps) {
 				className,
 			)}
 		>
-			{props.variant === "add" ? (
+			{variant === "add" ? (
 				<>
 					<AddToCartButton />
 					<QuantityStepper
 						max={5}
-						defaultValue={props.quantity}
-						onValueChange={props.onQuantityChange}
+						defaultValue={quantity}
+						onValueChange={onQuantityChange}
 					/>
 				</>
 			) : (
 				<>
 					<div className="flex flex-col">
 						<span className="text-sm leading-5 text-muted-foreground">
-							{props.countLabel ?? "כמות מוצרים"}
+							{countLabel ?? "כמות מוצרים"}
 						</span>
 						<strong className="text-lg leading-[26px] font-semibold tabular-nums">
-							{props.count}
+							{count}
 						</strong>
 					</div>
 					<Button size="lg" className="flex-1" onClick={onAction}>
