@@ -6,6 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export type CreateImagePathParameters = {
-	createdBy: number
+export interface CreateOrderDto {
+	[key: string]: unknown
 }

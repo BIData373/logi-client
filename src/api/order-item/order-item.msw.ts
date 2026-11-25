@@ -51,7 +51,7 @@ export const getCreateOrderItemResponseMock = (
 	...overrideResponse,
 })
 
-export const getGetOrderItemByIdResponseMock = (
+export const getGetOrderItemResponseMock = (
 	overrideResponse: Partial<Extract<OrderItemDto, object>> = {},
 ): OrderItemDto => ({
 	id: faker.number.float({ fractionDigits: 2 }),
@@ -165,22 +165,19 @@ export const getCreateOrderItemMockHandler = (
 		| ((
 				info: Parameters<
 					HttpResponseResolver<
-						{ userId: string; orderId: string; variantId: string },
+						{ orderId: string; variantId: string },
 						CreateOrderItemDto
 					>
 				>[0],
 		  ) => Promise<OrderItemDto> | OrderItemDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<
-		{ userId: string; orderId: string; variantId: string },
-		CreateOrderItemDto
-	>(
-		"http://localhost:8080/api/order-items/:userId/:orderId/:variantId",
+	return http.post<{ orderId: string; variantId: string }, CreateOrderItemDto>(
+		"http://localhost:3000//order-items/:orderId/:variantId",
 		async (
 			info: Parameters<
 				HttpResponseResolver<
-					{ userId: string; orderId: string; variantId: string },
+					{ orderId: string; variantId: string },
 					CreateOrderItemDto
 				>
 			>[0],
@@ -198,7 +195,7 @@ export const getCreateOrderItemMockHandler = (
 	)
 }
 
-export const getGetOrderItemByIdMockHandler = (
+export const getGetOrderItemMockHandler = (
 	overrideResponse?:
 		| OrderItemDto
 		| ((
@@ -207,14 +204,14 @@ export const getGetOrderItemByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:8080/api/order-items/:id",
+		"http://localhost:3000//order-items/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
 					? typeof overrideResponse === "function"
 						? await overrideResponse(info)
 						: overrideResponse
-					: getGetOrderItemByIdResponseMock(),
+					: getGetOrderItemResponseMock(),
 				{ status: 200 },
 			)
 		},
@@ -233,7 +230,7 @@ export const getUpdateOrderItemMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateOrderItemDto>(
-		"http://localhost:8080/api/order-items/:id",
+		"http://localhost:3000//order-items/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateOrderItemDto>
@@ -261,7 +258,7 @@ export const getDeleteOrderItemMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:8080/api/order-items/:id",
+		"http://localhost:3000//order-items/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -277,7 +274,7 @@ export const getDeleteOrderItemMockHandler = (
 }
 export const getOrderItemMock = () => [
 	getCreateOrderItemMockHandler(),
-	getGetOrderItemByIdMockHandler(),
+	getGetOrderItemMockHandler(),
 	getUpdateOrderItemMockHandler(),
 	getDeleteOrderItemMockHandler(),
 ]

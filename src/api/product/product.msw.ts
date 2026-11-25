@@ -6,7 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import { faker } from "@faker-js/faker"
-import type { HttpResponseResolver, RequestHandlerOptions } from "msw"
+import type {
+	HttpResponseResolver,
+	PathParams,
+	RequestHandlerOptions,
+} from "msw"
 import { HttpResponse, http } from "msw"
 
 import type {
@@ -136,18 +140,14 @@ export const getCreateProductMockHandler = (
 	overrideResponse?:
 		| ProductDto
 		| ((
-				info: Parameters<
-					HttpResponseResolver<{ userId: string }, CreateProductDto>
-				>[0],
+				info: Parameters<HttpResponseResolver<PathParams, CreateProductDto>>[0],
 		  ) => Promise<ProductDto> | ProductDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ userId: string }, CreateProductDto>(
-		"http://localhost:8080/api/products/:userId",
+	return http.post<PathParams, CreateProductDto>(
+		"http://localhost:3000//products",
 		async (
-			info: Parameters<
-				HttpResponseResolver<{ userId: string }, CreateProductDto>
-			>[0],
+			info: Parameters<HttpResponseResolver<PathParams, CreateProductDto>>[0],
 		) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -171,7 +171,7 @@ export const getGetAllProductsMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get(
-		"http://localhost:8080/api/products",
+		"http://localhost:3000//products",
 		async (info: Parameters<HttpResponseResolver>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -195,7 +195,7 @@ export const getGetProductByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:8080/api/products/:id",
+		"http://localhost:3000//products/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -221,7 +221,7 @@ export const getUpdateProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateProductDto>(
-		"http://localhost:8080/api/products/:id",
+		"http://localhost:3000//products/:id",
 		async (
 			info: Parameters<
 				HttpResponseResolver<{ id: string }, UpdateProductDto>
@@ -249,7 +249,7 @@ export const getDeleteProductMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:8080/api/products/:id",
+		"http://localhost:3000//products/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

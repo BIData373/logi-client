@@ -7,6 +7,5 @@
  */
 
 export type CreateVariantPathParameters = {
-	userId: number
 	productId: number
 }

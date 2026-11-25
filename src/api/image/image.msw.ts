@@ -6,7 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import { faker } from "@faker-js/faker"
-import type { HttpResponseResolver, RequestHandlerOptions } from "msw"
+import type {
+	HttpResponseResolver,
+	PathParams,
+	RequestHandlerOptions,
+} from "msw"
 import { HttpResponse, http } from "msw"
 
 import type { CreateImageDto, ImageDto } from "../model"
@@ -24,18 +28,14 @@ export const getCreateImageMockHandler = (
 	overrideResponse?:
 		| ImageDto
 		| ((
-				info: Parameters<
-					HttpResponseResolver<{ createdBy: string }, CreateImageDto>
-				>[0],
+				info: Parameters<HttpResponseResolver<PathParams, CreateImageDto>>[0],
 		  ) => Promise<ImageDto> | ImageDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ createdBy: string }, CreateImageDto>(
-		"http://localhost:8080/api/images/:createdBy",
+	return http.post<PathParams, CreateImageDto>(
+		"http://localhost:3000//images",
 		async (
-			info: Parameters<
-				HttpResponseResolver<{ createdBy: string }, CreateImageDto>
-			>[0],
+			info: Parameters<HttpResponseResolver<PathParams, CreateImageDto>>[0],
 		) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined

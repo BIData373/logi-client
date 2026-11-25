@@ -7,6 +7,5 @@
  */
 
 export type CreateCartItemPathParameters = {
-	userId: number
 	variantId: number
 }

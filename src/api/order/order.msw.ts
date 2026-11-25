@@ -6,10 +6,14 @@
  * OpenAPI spec version: 1.0
  */
 import { faker } from "@faker-js/faker"
-import type { HttpResponseResolver, RequestHandlerOptions } from "msw"
+import type {
+	HttpResponseResolver,
+	PathParams,
+	RequestHandlerOptions,
+} from "msw"
 import { HttpResponse, http } from "msw"
 
-import type { OrderDto, UpdateOrderDto } from "../model"
+import type { CreateOrderDto, OrderDto, UpdateOrderDto } from "../model"
 
 export const getCreateOrderResponseMock = (
 	overrideResponse: Partial<Extract<OrderDto, object>> = {},
@@ -203,13 +207,15 @@ export const getCreateOrderMockHandler = (
 	overrideResponse?:
 		| OrderDto
 		| ((
-				info: Parameters<HttpResponseResolver<{ userId: string }>>[0],
+				info: Parameters<HttpResponseResolver<PathParams, CreateOrderDto>>[0],
 		  ) => Promise<OrderDto> | OrderDto),
 	options?: RequestHandlerOptions,
 ) => {
-	return http.post<{ userId: string }>(
-		"http://localhost:8080/api/orders/:userId",
-		async (info: Parameters<HttpResponseResolver<{ userId: string }>>[0]) => {
+	return http.post<PathParams, CreateOrderDto>(
+		"http://localhost:3000//orders",
+		async (
+			info: Parameters<HttpResponseResolver<PathParams, CreateOrderDto>>[0],
+		) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
 					? typeof overrideResponse === "function"
@@ -232,7 +238,7 @@ export const getGetOrderByIdMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.get<{ id: string }>(
-		"http://localhost:8080/api/orders/:id",
+		"http://localhost:3000//orders/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
@@ -258,7 +264,7 @@ export const getUpdateOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.patch<{ id: string }, UpdateOrderDto>(
-		"http://localhost:8080/api/orders/:id",
+		"http://localhost:3000//orders/:id",
 		async (
 			info: Parameters<HttpResponseResolver<{ id: string }, UpdateOrderDto>>[0],
 		) => {
@@ -284,7 +290,7 @@ export const getDeleteOrderMockHandler = (
 	options?: RequestHandlerOptions,
 ) => {
 	return http.delete<{ id: string }>(
-		"http://localhost:8080/api/orders/:id",
+		"http://localhost:3000//orders/:id",
 		async (info: Parameters<HttpResponseResolver<{ id: string }>>[0]) => {
 			return HttpResponse.json(
 				overrideResponse !== undefined
