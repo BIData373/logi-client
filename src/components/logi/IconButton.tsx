@@ -2,9 +2,9 @@ import type { LucideIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 import { Button } from "../ui/button"
 
-type IconButtonProps = {
+interface IconButtonProps extends ComponentProps<"button"> {
 	icon: LucideIcon
-} & ComponentProps<"button">
+}
 
 export default function IconButton(props: IconButtonProps) {
 	return (
