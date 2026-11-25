@@ -1,39 +1,24 @@
 import { getRouteApi } from "@tanstack/react-router"
 import { Heart, Share } from "lucide-react"
-import { useEffect } from "react"
 import { useGetProductById } from "#/api"
+import { useSelectedVariant } from "#/hooks/useSelectedVariant"
 import { CheckoutBar } from "../logi/CheckoutBar"
 import { Header } from "../logi/Header"
 import IconButton from "../logi/IconButton"
-import ProductImagesCarousel from "../logi/ProductImagesCarousel"
+import ProductImagesCarousel from "../product/ProductImagesCarousel"
+import VariantSelector from "../product/VariantSelector"
 import { Badge } from "../ui/badge"
 import { Card } from "../ui/card"
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group"
 
 const routeApi = getRouteApi("/products/$productId")
 
 export default function ProductLayout() {
 	const navigate = routeApi.useNavigate()
 	const { productId } = routeApi.useParams()
-	const { variant: variantId } = routeApi.useSearch()
 	const { data: product } = useGetProductById({ id: productId })
-
-	const selectedVariant =
-		product?.variants.find((variant) => variant.id === variantId) ??
-		product?.variants[0]
-	const selectedVariantId = selectedVariant?.id
-
-	function selectVariant(id: number) {
-		navigate({ search: { variant: id }, replace: true })
-	}
-
-	// make sure there is always a variant selected
-	// biome-ignore lint/correctness/useExhaustiveDependencies: navigate is stable
-	useEffect(() => {
-		if (selectedVariantId !== undefined && selectedVariantId !== variantId) {
-			selectVariant(selectedVariantId)
-		}
-	}, [selectedVariantId, variantId])
+	const { selectedVariant, selectVariant } = useSelectedVariant(
+		product?.variants,
+	)
 
 	if (!product) return null
 
@@ -60,17 +45,11 @@ export default function ProductLayout() {
 						</Badge>
 					</div>
 					<h2 className="font-semibold text-[20px]">דגמים</h2>
-					<ToggleGroup
-						value={selectedVariantId ? [String(selectedVariantId)] : []}
-						onValueChange={([id]) => id && selectVariant(Number(id))}
-					>
-						{product.variants.map((variant) => (
-							<ToggleGroupItem key={variant.id} value={String(variant.id)}>
-								{variant.name}
-							</ToggleGroupItem>
-						))}
-					</ToggleGroup>
-
+					<VariantSelector
+						variants={product.variants}
+						selectedId={selectedVariant?.id}
+						onSelect={selectVariant}
+					/>
 					<Card className="p-3" flat>
 						<h3 className="font-semibold text-[16px]">פרטים על המוצר</h3>
 						<div className="flex text-[14px]">
