@@ -1,14 +1,18 @@
 import { cn } from "cn"
-import type { OrderItemDto } from "#/api/model"
+import type { VariantDto } from "#/api/model"
 import { Thumb } from "./Thumb"
 
 export interface OrderLineItemProps {
-	item: OrderItemDto
+	variant: VariantDto
+	quantity?: number
 	className?: string
 }
 
-export function OrderLineItem({ item, className }: OrderLineItemProps) {
-	const variant = item.variant
+export function OrderLineItem({
+	variant,
+	quantity,
+	className,
+}: OrderLineItemProps) {
 	const product = variant.product
 	const thumbImage = product.images[0]
 
@@ -18,11 +22,11 @@ export function OrderLineItem({ item, className }: OrderLineItemProps) {
 			<div className="flex min-w-0 flex-col">
 				<h3 className="text-base font-medium">{product.name}</h3>
 				{<h4 className="text-sm">{variant.name}</h4>}
-				{
+				{quantity && (
 					<span className="text-sm leading-5 text-muted-foreground">
-						כמות: <span className="tabular-nums">{999}</span>
+						כמות: <span className="tabular-nums">{quantity}</span>
 					</span>
-				}
+				)}
 			</div>
 		</div>
 	)

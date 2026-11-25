@@ -7,7 +7,8 @@ export function useSelectedVariant(variants: VariantDto[] = []) {
 	const { variant: variantId } = useSearch({ from: "/products/$productId" })
 
 	const selectedVariant =
-		variants.find((variant) => variant.id === variantId) ?? variants[0]
+		// biome-ignore lint/style/noNonNullAssertion: there is never a product without any variants
+		variants.find((variant) => variant.id === variantId) ?? variants[0]!
 	const selectedVariantId = selectedVariant?.id
 
 	function selectVariant(id: number) {

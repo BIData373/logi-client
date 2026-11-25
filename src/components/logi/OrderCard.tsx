@@ -16,7 +16,7 @@ export function OrderCard({ item, className }: OrderCardProps) {
 	return (
 		<Card className={cn(className)}>
 			<div className="p-2">
-				<OrderLineItem item={item} />
+				<OrderLineItem variant={item.variant} />
 			</div>
 			<Separator />
 			<div className="flex flex-wrap items-center justify-between gap-2 p-4">

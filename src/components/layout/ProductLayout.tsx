@@ -13,7 +13,6 @@ import { Card } from "../ui/card"
 const routeApi = getRouteApi("/products/$productId")
 
 export default function ProductLayout() {
-	const navigate = routeApi.useNavigate()
 	const { productId } = routeApi.useParams()
 	const { data: product } = useGetProductById({ id: productId })
 	const { selectedVariant, selectVariant } = useSelectedVariant(
@@ -27,7 +26,6 @@ export default function ProductLayout() {
 			<Header
 				title=""
 				variant="back"
-				onBack={() => navigate({ to: "/" })}
 				actions={
 					<>
 						<IconButton icon={Heart} />

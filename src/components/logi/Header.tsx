@@ -1,5 +1,6 @@
+import { useCanGoBack, useRouter } from "@tanstack/react-router"
 import { cn } from "cn"
-import { Bell, ChevronRight, Menu, ShoppingBag } from "lucide-react"
+import { ChevronRight, Menu } from "lucide-react"
 import type { ReactNode } from "react"
 import IconButton from "./IconButton"
 
@@ -11,9 +12,6 @@ interface AppHeaderProps {
 	notificationCount?: number
 	actions?: ReactNode
 	onMenu?: () => void
-	onBack?: () => void
-	onCartClick?: () => void
-	onNotificationsClick?: () => void
 	className?: string
 }
 
@@ -23,36 +21,34 @@ export function Header({
 	logoSrc,
 	actions,
 	onMenu,
-	onBack,
-	onCartClick,
-	onNotificationsClick,
 	className,
 }: AppHeaderProps) {
 	const isHome = variant === "home"
+
+	const canGoBack = useCanGoBack()
+	const router = useRouter()
+
+	function handleGoBack() {
+		if (canGoBack) {
+			router.history.back()
+		}
+	}
 
 	const start = (
 		<div className="flex min-w-0 items-center gap-1">
 			{isHome ? (
 				<IconButton aria-label="תפריט" onClick={onMenu} icon={Menu} />
 			) : (
-				<IconButton icon={ChevronRight} aria-label="חזרה" onClick={onBack} />
+				<IconButton
+					icon={ChevronRight}
+					aria-label="חזרה"
+					disabled={!canGoBack}
+					onClick={handleGoBack}
+				/>
 			)}
 			<h1 className="text-nowrap text-xl leading-7 font-semibold">{title}</h1>
 		</div>
 	)
-
-	const end =
-		actions ??
-		(isHome ? (
-			<>
-				<IconButton aria-label="סל" onClick={onCartClick} icon={ShoppingBag} />
-				<IconButton
-					aria-label="התראות"
-					onClick={onNotificationsClick}
-					icon={Bell}
-				/>
-			</>
-		) : null)
 
 	return (
 		<header
@@ -74,7 +70,7 @@ export function Header({
 					)}
 				</div>
 			)}
-			<div className="flex items-center justify-self-end">{end}</div>
+			<div className="flex items-center justify-self-end">{actions}</div>
 		</header>
 	)
 }
