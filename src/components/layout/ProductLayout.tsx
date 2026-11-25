@@ -58,7 +58,7 @@ export default function ProductLayout() {
 					</Card>
 				</div>
 			</main>
-			<CheckoutBar variant="add" />
+			<CheckoutBar variant="add" variantId={selectedVariant.id} />
 		</div>
 	)
 }
